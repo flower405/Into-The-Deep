@@ -15,7 +15,7 @@ public class OTOSAngularScalar extends LinearOpMode {
         double radsTurned = 0;
         Rotation2d lastHeading = Rotation2d.fromDouble(0);
         telemetry.addLine("OTOS Angular Scalar Tuner");
-        telemetry.addLine("Press START, then rotate the robot on the ground 10 times (3600 degrees).");
+        telemetry.addLine("Press START, then rotate the robot on the ground 10 times (360 degrees).");
         telemetry.addLine("Then copy the scalar into SparkFunOTOSDrive.");
         telemetry.update();
         waitForStart();
