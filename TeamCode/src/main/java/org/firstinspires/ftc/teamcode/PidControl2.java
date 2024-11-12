@@ -96,6 +96,9 @@ public class PidControl2 {
         rightLift.setPower(0);
     }
 
+    public void Horizontal1 () {
+
+    }
 
 
 
