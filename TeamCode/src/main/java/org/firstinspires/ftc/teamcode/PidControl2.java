@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.transition.Slide;
+
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -10,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class PidControl2 {
     DcMotorEx leftLift;
     DcMotorEx rightLift;
+
 
     double integralSum =0;
     double Kp =0.007; // 0.045
@@ -38,11 +42,7 @@ public class PidControl2 {
         leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        IntakePincherServo = hardwareMap.get(Servo.class, "Intake_Pincher");
-        OuttakePincherServo = hardwareMap.get(Servo.class, "Left_outtake");
-        IntakeExtendServo = hardwareMap.get(Servo.class, "Intake_extend");
-        LeftExtendServo = hardwareMap.get(Servo.class, "Left_extend");
-        RightExtendServo = hardwareMap.get(Servo.class, "Right_extend");
+
 
 
        // rightServo.setDirection(Servo.Direction.REVERSE);
@@ -53,22 +53,26 @@ public class PidControl2 {
         leftLift = hardwareMap.get(DcMotorEx.class, "left_lift");
         rightLift = hardwareMap.get(DcMotorEx.class, "right_lift");
 
+
+
+
         leftLift.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         rightLift.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
+        leftLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         leftLift.setDirection(DcMotorSimple.Direction.FORWARD);
         rightLift.setDirection(DcMotorSimple.Direction.REVERSE);
+//        SlideServoLeft.setDirection(Servo.Direction.REVERSE);
+//        LeftArm.setDirection(Servo.Direction.REVERSE);
 
 
         leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        IntakePincherServo = hardwareMap.get(Servo.class, "Intake_Pincher");
-        OuttakePincherServo = hardwareMap.get(Servo.class, "Left_outtake");
-        IntakeExtendServo = hardwareMap.get(Servo.class, "Intake_extend");
-        LeftExtendServo = hardwareMap.get(Servo.class, "Left_extend");
-        RightExtendServo = hardwareMap.get(Servo.class, "Right_extend");
+
 
 
     }
@@ -96,9 +100,9 @@ public class PidControl2 {
         rightLift.setPower(0);
     }
 
-    public void Horizontal1 () {
 
-    }
+
+
 
 
 

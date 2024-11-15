@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 
+import org.firstinspires.ftc.robotcore.external.StateMachine;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
@@ -63,29 +64,41 @@ public class Driving extends OpMode {
 
    private Servo IntakePincher = null;
 
+   private CRServo Reject = null;
+
     PidControl2 lift = new PidControl2();
 
     //funny little comment
  // for dumping the cubey things in the bucket
   private enum BucketState {
-
       IDLE,
       HORIZONTAL_EXTEND,
+        INTAKE,
       INTAKE_PINCHER_CLOSE,
       HORIZONTAL_RETRACT,
       SAMPLE_TRANSFER,
         LIFT_EXTEND,
         CLAW_READY,
+        VERTICAL_ADJUSMENT,
         SAMPLE_DUMP,
         LIFT_RETRACT,
-
         ARM_RETRACT,
 
-        LIFT_RETRACTED
   }
 
+//  private enum SpecimanState {
+//      IDLE,
+//      WALL_PICKUP,
+//      CUBE_PICKUP,
+//
+//
+//
+//  }
 
-BucketState bucketState = BucketState.IDLE;
+
+
+   // SpecimanState specimanState = SpecimanState.IDLE;
+    BucketState bucketState = BucketState.IDLE;
     ElapsedTime BucketTimer = new ElapsedTime();
 
 
@@ -119,6 +132,7 @@ BucketState bucketState = BucketState.IDLE;
         ClawRotate = hardwareMap.get(Servo.class, "Claw_Rotate");
         IntakePincher = hardwareMap.get(Servo.class, "Intake_Pincher");
         OuttakePincher = hardwareMap.get(Servo.class, "Outtake_Pincher");
+        Reject = hardwareMap.get(CRServo.class, "Reject");
 
 
 
@@ -133,6 +147,8 @@ BucketState bucketState = BucketState.IDLE;
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        SlideServoLeft.setDirection(Servo.Direction.REVERSE);
+        LeftArm.setDirection(Servo.Direction.REVERSE);
 
 
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -143,6 +159,7 @@ BucketState bucketState = BucketState.IDLE;
 
         telemetry.addData("status", "Initialized");
 
+        lift.initTele(hardwareMap);
 
         // limelight set up
         //  telemetry.setMsTransmissionInterval(11);
@@ -191,64 +208,88 @@ BucketState bucketState = BucketState.IDLE;
         rightBackDrive.setPower(rightBackPower);
 
 
-// intake and reject
-        if (gamepad1.a) {
-            Intake.setPower(1);
-        } if (gamepad1.b) {
-            Intake.setPower(-1);
-        } else {
-            Intake.setPower(0);
-        }
+
 
 // see I use comments not for anything useful but I am using it
+
+
+
+
 
 
         switch (bucketState) {
             case IDLE:  // start positions
         LeftArm.setPosition(0);
+        SlideServoLeft.setPosition(0);
+        SlideServoRight.setPosition(0);
         RightArm.setPosition(0);
         ClawRotate.setPosition(0.3);
-        IntakePincher.setPosition(0);
+        IntakePincher.setPosition(0.72);
         OuttakePincher.setPosition(0);
         lift.setHeight(LiftConstants.liftRetracted);
         bucketState = BucketState.HORIZONTAL_EXTEND;
-
-         case HORIZONTAL_EXTEND: // extending horiztonal lifts and flipping intake out
-    if (gamepad2.left_bumper) {
-    SlideServoLeft.setPosition(LiftConstants.HS1);
-    SlideServoRight.setPosition(LiftConstants.HS1);
-    IntakeFlip.setPosition(0.3);
-    BucketTimer.reset();
-    bucketState = BucketState.INTAKE_PINCHER_CLOSE;
-    } if (gamepad2.right_bumper) {
-    SlideServoRight.setPosition(LiftConstants.HS2);
-    SlideServoLeft.setPosition(LiftConstants.HS2);
-    IntakeFlip.setPosition(0.3);
-    BucketTimer.reset();
-    bucketState = BucketState.INTAKE_PINCHER_CLOSE;
-    } if (gamepad2.right_trigger > 0.9) {
-    SlideServoLeft.setPosition(LiftConstants.HS3);
-    SlideServoRight.setPosition(LiftConstants.HS3);
-    IntakeFlip.setPosition(0.3);
-    BucketTimer.reset();
-    bucketState = BucketState.INTAKE_PINCHER_CLOSE;
+        break;
+        case HORIZONTAL_EXTEND: // extending horiztonal lifts and flipping intake out
+    if (gamepad1.left_bumper) {
+      SlideServoLeft.setPosition(0.2);
+      SlideServoRight.setPosition(0.2);
+     IntakeFlip.setPosition(0.6);
+      BucketTimer.reset();
+      bucketState = BucketState.INTAKE;
+    } if (gamepad1.left_trigger > 0.9) {
+        SlideServoLeft.setPosition(0.5);
+        SlideServoRight.setPosition(0.5);
+        IntakeFlip.setPosition(0.6);
+        BucketTimer.reset();
+        bucketState = BucketState.INTAKE;
+    } if (gamepad1.right_trigger > 0.9) {
+        SlideServoLeft.setPosition(0.75);
+        SlideServoRight.setPosition(0.75);
+        IntakeFlip.setPosition(0.6);
+        BucketTimer.reset();
+        bucketState = BucketState.INTAKE;
     }
     break;
- case INTAKE_PINCHER_CLOSE:  // close pincher on sample
-     if (gamepad1.x) {
-         IntakePincher.setPosition(0.3);
-         bucketState = BucketState.HORIZONTAL_RETRACT;
-     }
+    case INTAKE:
+                Intake.setPower(1);
+        bucketState = BucketState.INTAKE_PINCHER_CLOSE;
+                if (gamepad2.b) {
+                    Reject.setPower(-1);
+                    bucketState = BucketState.INTAKE_PINCHER_CLOSE;
+
+                }
+                break;
+    case INTAKE_PINCHER_CLOSE:  // close pincher on sample
+                if (gamepad2.x) {
+                     Intake.setPower(0);
+                    Reject.setPower(0);
+                    IntakePincher.setPosition(0.6);
+                    BucketTimer.reset();
+                     bucketState = BucketState.HORIZONTAL_RETRACT;
+                    }
+        if (gamepad1.left_bumper) {
+            SlideServoLeft.setPosition(0.2);
+            SlideServoRight.setPosition(0.2);
+            bucketState = BucketState.INTAKE;
+        } if (gamepad1.right_bumper) {
+        SlideServoLeft.setPosition(0.5);
+        SlideServoRight.setPosition(0.5);
+        bucketState = BucketState.INTAKE;
+    } if (gamepad1.right_trigger > 0.9) {
+        SlideServoLeft.setPosition(0.75);
+        SlideServoRight.setPosition(0.75);
+        bucketState = BucketState.INTAKE;
+    }
      break;
      case HORIZONTAL_RETRACT: // retract lift and flip back intake
          if (BucketTimer.seconds() > 0.5) {
              IntakeFlip.setPosition(0); // change to actual position
              SlideServoLeft.setPosition(0);
              SlideServoRight.setPosition(0);
-                }
+     }
          if (BucketTimer.seconds() > 1.5) { // open up the claw
-             IntakePincher.setPosition(0);
-             bucketState = BucketState.SAMPLE_TRANSFER;
+             IntakePincher.setPosition(0.72);
+           //  bucketState = BucketState.SAMPLE_TRANSFER;
              BucketTimer.reset();
          }
          break;
@@ -272,6 +313,24 @@ BucketState bucketState = BucketState.IDLE;
                 } if (gamepad1.right_bumper) {
                     lift.setHeight(LiftConstants.HighBucket);
                      bucketState = BucketState.LIFT_EXTEND;
+            }  if (gamepad2.left_bumper) {
+                SlideServoLeft.setPosition(0.2);
+                SlideServoRight.setPosition(0.2);
+                IntakeFlip.setPosition(0.55);
+                BucketTimer.reset();
+                bucketState = BucketState.INTAKE;
+            } if (gamepad2.right_bumper) {
+                SlideServoLeft.setPosition(0.5);
+                SlideServoRight.setPosition(0.5);
+                IntakeFlip.setPosition(0.55);
+                BucketTimer.reset();
+                bucketState = BucketState.INTAKE;
+            } if (gamepad2.right_trigger > 0.9) {
+                SlideServoLeft.setPosition(0.75);
+                SlideServoRight.setPosition(0.75);
+                IntakeFlip.setPosition(0.55);
+                BucketTimer.reset();
+                bucketState = BucketState.INTAKE;
             }
             break;
             case CLAW_READY:
@@ -279,13 +338,19 @@ BucketState bucketState = BucketState.IDLE;
                  LeftArm.setPosition(0.7);
                  RightArm.setPosition(0.7);
                  ClawRotate.setPosition(0.9);
-                 bucketState = BucketState.SAMPLE_DUMP;
+                 bucketState = BucketState.VERTICAL_ADJUSMENT;
                 }
                 break;
-            case SAMPLE_DUMP:
+                case SAMPLE_DUMP: // adjusting height
                 if (gamepad1.dpad_down) {
                     OuttakePincher.setPosition(0);
                     BucketTimer.reset();
+                    bucketState = BucketState.ARM_RETRACT;
+                } if (gamepad1.left_bumper) {
+                    lift.setHeight(LiftConstants.LowBucket);
+                    bucketState = BucketState.ARM_RETRACT;
+                } if (gamepad1.right_bumper) {
+                    lift.setHeight(LiftConstants.HighBucket);
                     bucketState = BucketState.ARM_RETRACT;
                 }
                 break;
@@ -306,8 +371,34 @@ BucketState bucketState = BucketState.IDLE;
                 default:
                 //Should never happen but just in case
                 bucketState = BucketState.IDLE;
-
         }
+
+
+//        switch (specimanState)  {
+//            case IDLE:
+//                LeftArm.setPosition(0);
+//                SlideServoLeft.setPosition(LiftConstants.HSretracted);
+//                SlideServoRight.setPosition(0.2);
+//                RightArm.setPosition(0);
+//                ClawRotate.setPosition(0.3);
+//                IntakePincher.setPosition(0.72);
+//                OuttakePincher.setPosition(0);
+//                lift.setHeight(LiftConstants.liftRetracted);
+//                break;
+//            case WALL_PICKUP:
+//                if (gamepad1.dpad_left) {
+//                    LeftArm.setPosition(0);
+//                    RightArm.setPosition(0);
+//                    ClawRotate.setPosition(0);
+//                }
+//                break;
+//            case CUBE_PICKUP:
+//                if (gamepad1.a) {
+//                    LeftArm.setPosition(0);
+//                    RightArm.setPosition(0);
+//                    ClawRotate.setPosition(0);
+//                }
+//        }
 
 
 
