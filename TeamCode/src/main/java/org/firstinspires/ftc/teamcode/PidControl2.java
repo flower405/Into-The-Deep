@@ -23,7 +23,6 @@ public class PidControl2 {
     //0.000001
     ElapsedTime timer = new ElapsedTime();
     private double lastError = 0;
-    private Servo IntakePincherServo, OuttakePincherServo, IntakeExtendServo, LeftExtendServo, RightExtendServo = null;
 
     public void initAuto(HardwareMap hardwareMap) {
         leftLift = hardwareMap.get(DcMotorEx.class, "left_lift");
@@ -35,8 +34,8 @@ public class PidControl2 {
         leftLift.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         rightLift.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        leftLift.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightLift.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftLift.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightLift.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
         leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -54,16 +53,16 @@ public class PidControl2 {
         rightLift = hardwareMap.get(DcMotorEx.class, "right_lift");
 
 
-
+        leftLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftLift.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         rightLift.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        leftLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftLift.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightLift.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftLift.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightLift.setDirection(DcMotorSimple.Direction.FORWARD);
 //        SlideServoLeft.setDirection(Servo.Direction.REVERSE);
 //        LeftArm.setDirection(Servo.Direction.REVERSE);
 

@@ -130,19 +130,37 @@ public class ServoTest extends OpMode {
     public void loop() {
 
 
-
-      if (gamepad1.left_bumper) {
-          LeftArm.setPosition(0);
-          RightArm.setPosition(0);
-      } if (gamepad1.right_bumper) {
-            LeftArm.setPosition(0.2);
-            RightArm.setPosition(0.2);
-        } if (gamepad1.left_trigger > 0.9) {
-                LeftArm.setPosition(0.9);
-                RightArm.setPosition(0.9);
-        }
+if (gamepad1.left_bumper) {
+   IntakeFlip.setPosition(0);
+}
 
 
+//      if (gamepad1.left_bumper) {
+//          LeftArm.setPosition(0.1);
+//          RightArm.setPosition(0.1);
+//ClawRotate.setPosition(0.1);
+//      } if (gamepad1.right_bumper) {
+//            LeftArm.setPosition(1);
+//            RightArm.setPosition(1);
+//            ClawRotate.setPosition(0.35);
+//        } if (gamepad1.left_trigger > 0.9) {
+//                SlideServoLeft.setPosition(0.1);
+//                SlideServoRight.setPosition(0.1);
+//              LeftArm.setPosition(0.45);
+//                RightArm.setPosition(0.45);
+//            ClawRotate.setPosition(0.0);
+//        } if (gamepad1.a) {
+//            LeftArm.setPosition(0.73);
+//            RightArm.setPosition(0.73);
+//            ClawRotate.setPosition(0.2);
+//        }
+
+
+// picking up speciman = 0
+        // arm idle = 0.55
+        // pciking up cube from intake = 0.47
+        // dropping off bucket = 1
+        // dropping off specima = 0.73
 
 // see I use comments not for anything useful but I am using it
 
