@@ -302,18 +302,19 @@ public class Driving extends OpMode {
         }
      break;
      case HORIZONTAL_RETRACT: // retract lift and flip back intake
-         if (BucketTimer.seconds() > 0.5) {
+         if (BucketTimer.seconds() > 0.2) {
              IntakeFlip.setPosition(0); // change to actual position
              SlideServoLeft.setPosition(0.1);
              SlideServoRight.setPosition(0.1); //I changed the transfer position to better grab sample
+             OuttakePincher.setPosition(0);
              BucketTimer.reset();
              bucketState = BucketState.SAMPLE_TRANSFER;
      }
          break;
             case SAMPLE_TRANSFER: // arm goes from idle to pick up cube and go back to idle
                 if (BucketTimer.seconds() > 1) {
-                    LeftArm.setPosition(0.5);
-                    RightArm.setPosition(0.5);
+                    LeftArm.setPosition(0.45);
+                    RightArm.setPosition(0.45);
                     ClawRotate.setPosition(0.1);
                     //Intake.setPower(1);
                     //IntakePincher.setPosition(0.8);
@@ -447,7 +448,7 @@ public class Driving extends OpMode {
                 }
                 break;
             case ARM_FLIP:
-                if (SpecimanTimer.seconds() > 2) {
+                if (SpecimanTimer.seconds() > 0.5) {
                     LeftArm.setPosition(0.1);
                     RightArm.setPosition(0.1);
                     ClawRotate.setPosition(0.13);
@@ -464,7 +465,7 @@ public class Driving extends OpMode {
                 }
             break;
             case FRONT_BACK_TRANSFER:
-                if (SpecimanTimer.seconds() > 0.5) {
+                if (SpecimanTimer.seconds() > 0.2) {
                     liftHeight = LiftConstants.HighRung;
                 }
                 if (SpecimanTimer.seconds() > 1.5) {
