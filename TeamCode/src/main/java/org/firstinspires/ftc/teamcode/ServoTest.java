@@ -131,8 +131,11 @@ public class ServoTest extends OpMode {
 
 
 if (gamepad1.left_bumper) {
-   IntakeFlip.setPosition(0);
+   ClawRotate.setPosition(0);
+   LeftArm.setPosition(1);
+   RightArm.setPosition(1);
 }
+
 
 
 //      if (gamepad1.left_bumper) {

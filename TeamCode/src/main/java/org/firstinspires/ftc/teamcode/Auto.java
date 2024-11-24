@@ -12,7 +12,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Disabled
+
 @Autonomous
 public class Auto extends LinearOpMode
 {
@@ -47,9 +47,9 @@ public class Auto extends LinearOpMode
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         {
+waitForStart();
+robot.drive(2000, 0.4, robot.STRAFELEFT);
 
-robot.drive(500, 0.4, robot.STRAFELEFT);
-robot.drive(3000, 0.4, robot.FORWARD);
 
         }
 
