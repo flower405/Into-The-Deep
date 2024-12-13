@@ -99,6 +99,8 @@ public class ServoTest extends OpMode {
 
         SlideServoLeft.setDirection(Servo.Direction.REVERSE);
         LeftArm.setDirection(Servo.Direction.REVERSE);
+        IntakePincher.setDirection(Servo.Direction.REVERSE);
+        ClawRotate.setDirection(Servo.Direction.REVERSE);
 
 
 
@@ -131,11 +133,18 @@ public class ServoTest extends OpMode {
 
 
 if (gamepad1.left_bumper) {
-   ClawRotate.setPosition(0);
-   LeftArm.setPosition(1);
-   RightArm.setPosition(1);
-}
-
+   LeftArm.setPosition(0);
+    RightArm.setPosition(0);
+} if (gamepad1.right_bumper) {
+            LeftArm.setPosition(0.);
+            RightArm.setPosition(0.5);
+        } if (gamepad1.right_trigger > 0.9) {
+            LeftArm.setPosition(0.4);
+         RightArm.setPosition(0.4);
+        } if (gamepad1.left_trigger > 0.9) {
+            LeftArm.setPosition(0.7);
+           RightArm.setPosition(0.7);
+        }
 
 
 //      if (gamepad1.left_bumper) {

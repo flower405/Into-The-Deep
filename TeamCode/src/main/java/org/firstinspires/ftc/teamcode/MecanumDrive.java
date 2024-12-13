@@ -64,15 +64,15 @@ public class MecanumDrive {
 
         // drive model parameters
         public double inPerTick = 1; // SparkFun OTOS Note: you can probably leave this at 1
-        public double lateralInPerTick = inPerTick;
-        public double trackWidthTicks = 0;
+        public double lateralInPerTick =  0.6173031207394403;
+        public double trackWidthTicks = 11.921822162752171;
 
         // feedforward parameters (in tick units)
-        public double kS = 0;
-        public double kV = 0;
-        public double kA = 0;
+        public double kS = 1.355400335263599;
+        public double kV = 0.13567311418191833;
+        public double kA = 0.015;
 
-        // path profile parameters (in inches)
+        // path profile parameters (in 0.0000001inches)
         public double maxWheelVel = 50;
         public double minProfileAccel = -30;
         public double maxProfileAccel = 50;
@@ -83,8 +83,8 @@ public class MecanumDrive {
 
         // path controller gains
         public double axialGain = 0.0;
-        public double lateralGain = 0.0;
-        public double headingGain = 0.0; // shared with turn
+        public double lateralGain = 2;
+        public double headingGain = 3; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
@@ -239,7 +239,8 @@ public class MecanumDrive {
         // TODO: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         lazyImu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
-                PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
+            //    PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
+        PARAMS.logoFacingDirection.RIGHT, PARAMS.usbFacingDirection.UP));
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 

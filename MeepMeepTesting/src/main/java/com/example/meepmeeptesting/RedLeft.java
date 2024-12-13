@@ -16,13 +16,14 @@ public class RedLeft {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-10, -52, Math.toRadians(90)))
-                .lineToY(-34)
-                // place speciman on bar
-                .strafeTo(new Vector2d(-48, -41))
-                // pick up block
-                .turn(Math.toRadians(-30))
-                .strafeTo(new Vector2d(-57, -57))
-                // place sample in bucket
+                .lineToY(-36)
+                // place first speciman on bar
+                .strafeTo(new Vector2d(-48, -39))
+                // pick up sample 1
+
+
+
+
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
