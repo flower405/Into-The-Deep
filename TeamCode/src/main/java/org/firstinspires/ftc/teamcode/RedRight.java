@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -51,16 +51,20 @@ public class RedRight extends LinearOpMode {
        DRIVE_BAR_1,
        SPECIMAN_DROP1,
        LIFT_RETRACT1,
-       DRIVE_SAMPLE1,
-       SPECIMAN_PICKUP1,
-       ARM_FLIP1,
-       DRIVE_SPECIMAN_PICKUP,
-       CLOSE_PINCHER2,
-       TRANSFER1,
-       DRIVE_BAR2,
-       SPECIAN_DROP2,
-       LIFT_RETRACT2,
-       DRIVE_SAMPLE2
+        DRIVE_ARM_READY,
+        ARM_READY,
+        DRIVE_PICKUP_SPECIMAN2,
+        PICKUP_SPECIMAN2,
+        LIFT_EXTEND2,
+        DRIVE_ARM_TRANSFER,
+        ARM_TRANSFER2,
+
+        DRIVE_BAR2,
+        SPECIMAN_DROP2,
+        BACK_UP,
+        LIFT_RETRACT2,
+
+        PARK
 
 
    }
@@ -71,41 +75,56 @@ public class RedRight extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d initialPose = new Pose2d(10, -52, Math.toRadians(90));
+        Pose2d initialPose = new Pose2d(10,-61, Math.toRadians(90));
         SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, initialPose);
         //Define robots starting position and orientation
 
 
-        Action TrajectoryActionBar1 = drive.actionBuilder(initialPose)
-                .splineToConstantHeading(new Vector2d(0, -23), Math.toRadians(90))
-                .build();
-        // this is going to second bar
+        TrajectoryActionBuilder Bar1 = drive.actionBuilder(initialPose)
+        .splineToConstantHeading(new Vector2d(0, -32), Math.toRadians(90));
 
-        Action TrajectoryActionSample1 = drive.actionBuilder(drive.pose)
-                .lineToY(-46)
-                .splineToConstantHeading(new Vector2d(35, -38), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(35, -20), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(42, -10), Math.toRadians(90))
-                .lineToY(-52)
-                .build();
-        // this goes from bar to pushing sample into the park area, after this pick up second speciman
+        Action TrajectoryActionBar1 = Bar1.build();
+        // place speciman on bar
 
-        Action TrajectoryActionSpecimanPickup1 = drive.actionBuilder(drive.pose)
-                .lineToY(-60)
-                .build();
-        Action TrajectoryActionSpeciman2 = drive.actionBuilder(drive.pose)
-                .lineToY(-52)
-                .splineToConstantHeading(new Vector2d(10, -36), Math.toRadians(90))
-                .build();
-        // this is just to bar now go push second sample
+        TrajectoryActionBuilder Speciman2Ready = Bar1.endTrajectory().fresh()
+                .strafeTo(new Vector2d(40, -50));
 
-        Action TrajectoryActionSample2 = drive.actionBuilder(drive.pose)
-                .lineToY(-46)
-                .splineToConstantHeading(new Vector2d(35, -38), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(35, -20), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(54, -10), Math.toRadians(90))
-                .lineToY(-52)
-                .build();
+        Action TrajectoryActionSpeciman2Ready = Speciman2Ready.build();
+        // go to positon to put up arm
+
+        TrajectoryActionBuilder PickUpSpeciman = Speciman2Ready.endTrajectory().fresh()
+                .strafeTo(new Vector2d(40, -63));
+
+        Action TrajectoryActionPickUpSpeciman = PickUpSpeciman.build();
+
+        TrajectoryActionBuilder ArmFlipS2 = PickUpSpeciman.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(3, -45), Math.toRadians(270));
+
+        Action TrajectoryArmFlipS2 = ArmFlipS2.build();
+
+     TrajectoryActionBuilder Bar2 = ArmFlipS2.endTrajectory().fresh()
+             .strafeTo(new Vector2d(5, -30));
+
+     Action TrajectoryBar2 = Bar2.build();
+
+     TrajectoryActionBuilder BackUp = Bar2.endTrajectory().fresh()
+             .strafeTo(new Vector2d(5, -40))
+            .strafeToLinearHeading(new Vector2d(45, -52), Math.toRadians(90));
+
+     Action TrajectoryBackUp = BackUp.build();
+
+
+
+    // TrajectoryActionBuilder Park = BackUp.endTrajectory().fresh()
+            // .strafeToLinearHeading(new Vector2d(40, -60), Math.toRadians(90));
+
+     // Action TrajectoryPark = Park.build();
+
+
+
+
+
+
         // this is then pushing second sample into park area and park
 
         // lift init
@@ -140,7 +159,7 @@ public class RedRight extends LinearOpMode {
         telemetry.addData("lift State",liftState);
         telemetry.update();
 
-        while(liftState != LiftState.DRIVE_SAMPLE2){
+        while(liftState != LiftState.PARK){
         switch (liftState) {
             case CLOSE_PINCHER1:
                 liftTimer.reset();
@@ -149,10 +168,8 @@ public class RedRight extends LinearOpMode {
                 ClawRotate.setPosition(0.35);
                 OuttakePincher.setPosition(0.4);
                 telemetry.update();
-                    liftState = LiftState.LIFT_EXTEND1;
-
-
-                break;
+                liftState = LiftState.LIFT_EXTEND1;
+                    break;
             case LIFT_EXTEND1:
                 if (liftTimer.seconds() > 0.2) {
                     liftHeight = LiftConstants.BarAuto;
@@ -170,17 +187,18 @@ public class RedRight extends LinearOpMode {
                   );
                   liftTimer.reset();
                   liftState = LiftState.SPECIMAN_DROP1;
+                  telemetry.update();
               }
               break;
             case SPECIMAN_DROP1:
-                if (liftTimer.seconds() > 0.2) {
+                if (liftTimer.seconds() > 1) {
                     ClawRotate.setPosition(0.6);
                 }
-                if (liftTimer.seconds() > 0.5) {
+                if (liftTimer.seconds() > 1.2) {
                     liftHeight = LiftConstants.SpecimanDropAuto1;
-                } if (liftTimer.seconds() > 0.8) {
+                } if (liftTimer.seconds() > 1.5) {
                 liftHeight = LiftConstants.SpecimanDropAuto2;
-            } if (liftTimer.seconds() > 1.1) {
+            } if (liftTimer.seconds() > 1.8) {
                 liftHeight = LiftConstants.SpecimanDropAuto3;
             //    } if (liftTimer.seconds() > 1.4) {
                // liftHeight = LiftConstants.SpecimanDropAuto4;
@@ -189,6 +207,7 @@ public class RedRight extends LinearOpMode {
                     OuttakePincher.setPosition(0);
                     liftTimer.reset();
                     liftState = LiftState.LIFT_RETRACT1;
+                    telemetry.update();
                 }
                 break;
             case LIFT_RETRACT1:
@@ -199,98 +218,143 @@ public class RedRight extends LinearOpMode {
                 }
                 if (liftTimer.seconds() > 0.7) {
                     liftHeight = LiftConstants.liftRetracted;
-                 //   liftState = LiftState.DRIVE_SAMPLE1;
-                }
-                break;
-            case DRIVE_SAMPLE1:
-                Actions.runBlocking(
-                        new SequentialAction(
-                                TrajectoryActionSample1
-                        )
-                );
-                liftTimer.reset();
-                liftState = LiftState.SPECIMAN_PICKUP1;
-                break;
-            case SPECIMAN_PICKUP1:
-                liftHeight = LiftConstants.LiftSpickup;
-                OuttakePincher.setPosition(0.5); //closes claw when going by strings
-                liftTimer.reset();
-                liftState = LiftState.ARM_FLIP1;
-                break;
-            case ARM_FLIP1:
-                if (liftTimer.seconds() > 0.5) {
-                    LeftArm.setPosition(0.7);
-                    RightArm.setPosition(0.7);
-                    ClawRotate.setPosition(0.3);
-                    OuttakePincher.setPosition(0);
                     liftTimer.reset();
-                    liftState = LiftState.DRIVE_SPECIMAN_PICKUP;
+                    liftState = LiftState.DRIVE_ARM_READY;
+                    telemetry.update();
                 }
                 break;
-            case DRIVE_SPECIMAN_PICKUP:
+            case DRIVE_ARM_READY:
+                if (liftTimer.seconds() > 0.5) {
+                    Actions.runBlocking(
+                            new SequentialAction(
+                                    TrajectoryActionSpeciman2Ready
+                            )
+                    );
+                liftTimer.reset();
+                liftState = LiftState.ARM_READY;
+                    telemetry.update();
+                }
+                break;
+            case ARM_READY:
+                if (liftTimer.seconds() > 0.2) {
+                    liftHeight = LiftConstants.LiftSpickup;
+                  //  OuttakePincher.setPosition(0.5);
+                } if (liftTimer.seconds() > 0.5) {
+                LeftArm.setPosition(0.7);
+                RightArm.setPosition(0.7);
+                ClawRotate.setPosition(0.65);
+                OuttakePincher.setPosition(0);
+                liftTimer.reset();
+                liftState = LiftState.DRIVE_PICKUP_SPECIMAN2;
+                telemetry.update();
+            }
+                break;
+            case DRIVE_PICKUP_SPECIMAN2:
                 Actions.runBlocking(
                         new SequentialAction(
-                                TrajectoryActionSpecimanPickup1
+                              TrajectoryActionPickUpSpeciman
                         )
                 );
                 liftTimer.reset();
-                liftState = LiftState.CLOSE_PINCHER2;
+                liftState = LiftState.PICKUP_SPECIMAN2;
+                telemetry.update();
                 break;
-            case CLOSE_PINCHER2:
-                if (liftTimer.seconds() > 1) {
+            case PICKUP_SPECIMAN2:
+                if (liftTimer.seconds() > 0.2) {
                     OuttakePincher.setPosition(0.4);
                     liftTimer.reset();
-                    liftState = LiftState.TRANSFER1;
+                    liftState = LiftState.LIFT_EXTEND2;
+                    telemetry.update();
                 }
                 break;
-            case TRANSFER1:
-                if (liftTimer.seconds() > 0.2) {
-                    liftHeight = LiftConstants.HighRung;
-                }
-                if (liftTimer.seconds() > 1.5) {
-                    LeftArm.setPosition(0.4); // what are these value?
-                    RightArm.setPosition(0.4);
-                    ClawRotate.setPosition(0.9);
+            case LIFT_EXTEND2:
+               if (liftTimer.seconds() > 0.7) {
+                   liftHeight = LiftConstants.BarAuto2;
+                   liftTimer.reset();
+                   telemetry.update();
+                   liftState = LiftState.DRIVE_ARM_TRANSFER;
+                   telemetry.update();
+               }
+                break;
+            case DRIVE_ARM_TRANSFER:
+               if (liftTimer.seconds() > 1) {
+                   Actions.runBlocking(
+                           new SequentialAction(
+                                   TrajectoryArmFlipS2
+                           )
+                   );
+                   liftTimer.reset();
+                   liftState = LiftState.DRIVE_BAR2;
+                   telemetry.update();
+               }
+                break;
+           case DRIVE_BAR2:
+               Actions.runBlocking(
+                            new SequentialAction(
+                                    TrajectoryBar2
+                            )
+                    );
                     liftTimer.reset();
-                    liftState = LiftState.DRIVE_BAR2;
-                }
+                    liftState = LiftState.SPECIMAN_DROP2;
+               telemetry.update();
+
                 break;
-            case DRIVE_BAR2:
-                Actions.runBlocking(
-                        new SequentialAction(
-                                TrajectoryActionSpeciman2
-                        )
-                );
-                liftTimer.reset();
-                liftState = LiftState.SPECIAN_DROP2;
-                break;
-            case SPECIAN_DROP2:
-                if (liftTimer.seconds() > 1) {
-                    liftHeight = LiftConstants.SpecimanDrop;
+            case SPECIMAN_DROP2:
+               // if (liftTimer.seconds() > 0.2) {
+               //     ClawRotate.setPosition(0.6);
+              //  }
+                if (liftTimer.seconds() > 0.5) {
+                    liftHeight = LiftConstants.SpecimanDropAuto1;
                 }
-                if (liftTimer.seconds() > 3) {
+                if (liftTimer.seconds() > 0.8) {
+                liftHeight = LiftConstants.SpecimanDropAuto2;
+            }
+                //if (liftTimer.seconds() > 1.1) {
+              //  liftHeight = LiftConstants.SpecimanDropAuto3;
+              //  }
+                if (liftTimer.seconds() > 2) {
                     OuttakePincher.setPosition(0);
                     liftTimer.reset();
-                    liftState = LiftState.LIFT_RETRACT2;
+                    liftState = LiftState.BACK_UP;
+                    telemetry.update();
                 }
                 break;
+            case BACK_UP:
+                if (liftTimer.seconds() > 1) {
+                    Actions.runBlocking(
+                            new SequentialAction(
+                                    TrajectoryBackUp
+                            )
+                    );
+liftTimer.reset();
+liftState = LiftState.LIFT_RETRACT2;
+                    telemetry.update();
+                }
             case LIFT_RETRACT2:
-                if (liftTimer.seconds() > 0.5) {
-                    LeftArm.setPosition(0.55);
-                    RightArm.setPosition(0.55);
-                    ClawRotate.setPosition(0.3);
+                if (liftTimer.seconds() > 1) {
+                    LeftArm.setPosition(0.35);
+                    RightArm.setPosition(0.35);
+                    ClawRotate.setPosition(0.35);
+                    telemetry.update();
                 }
-                if (liftTimer.seconds() > 0.7) {
+                if (liftTimer.seconds() > 3) {
                     liftHeight = LiftConstants.liftRetracted;
-                    liftState = LiftState.DRIVE_SAMPLE2;
+                    liftTimer.reset();
+                   // liftState = LiftState.PARK;
+                    telemetry.update();
                 }
-            case DRIVE_SAMPLE2:
-                Actions.runBlocking(
-                        new SequentialAction(
-                                TrajectoryActionSample2
-                        )
-                );
                 break;
+//            case PARK:
+//                if (liftTimer.seconds() > 3.5) {
+//                    Actions.runBlocking(
+//                            new SequentialAction(
+//                                    TrajectoryPark
+//                            )
+//                    );
+//
+//            }
+//                break;
+
         }
           lift.setHeight(liftHeight);
         }

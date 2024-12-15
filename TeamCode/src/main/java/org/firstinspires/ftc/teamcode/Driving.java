@@ -262,12 +262,27 @@ public class Driving extends OpMode {
                 break;
             case INTAKE: // starting the roller an rejecting
                 if (BucketTimer.seconds() > 0.5) {
-                    IntakeFlip.setPosition(0.52);
+                    //IntakeFlip.setPosition(0.52);
                     bucketState = BucketState.INTAKE_PINCHER_CLOSE;
                     Intake.setPower(1);
                 }
                 break;
             case INTAKE_PINCHER_CLOSE:  // close pincher on sample and stop the roller
+
+                if (gamepad1.a) {
+                    IntakeFlip.setPosition(0.53);
+                }
+                if (gamepad1.b) {
+                    IntakeFlip.setPosition(0);
+                }
+
+                if (gamepad2.b) {
+                    Intake.setPower(-1);
+                }
+                if (gamepad2.y) {
+                    Intake.setPower(1);
+                }
+
 
                 if (gamepad2.x) {
                     Intake.setPower(0);
@@ -433,9 +448,9 @@ public class Driving extends OpMode {
                     liftHeight = LiftConstants.HighRung;
                 }
                 if (SpecimanTimer.seconds() > 1.5) {
-                    LeftArm.setPosition(0.35);
-                    RightArm.setPosition(0.35);
-                    ClawRotate.setPosition(0.35);
+                  //  LeftArm.setPosition(0.2);
+                 //   RightArm.setPosition(0.2);
+                    ClawRotate.setPosition(0.65);
                     SpecimanTimer.reset();
                     bucketState = BucketState.BAR_HANG;
                 }
@@ -455,12 +470,12 @@ public class Driving extends OpMode {
                     liftDecrease = false;
                 }
 
-                if (gamepad1.dpad_left) {
-                    liftHeight = LiftConstants.SpecimanDrop;
-                    LeftArm.setPosition(0.1);
-                    RightArm.setPosition(0.1);
-                    ClawRotate.setPosition(0.1);
-                }
+//                if (gamepad1.dpad_left) {
+//                    liftHeight = LiftConstants.SpecimanDrop;
+//                    LeftArm.setPosition(0.1);
+//                    RightArm.setPosition(0.1);
+//                    ClawRotate.setPosition(0.1);
+//                }
 
                 //  liftHeight = LiftConstants.SpecimanDrop;
                      // LeftArm.setPosition(0.85);
