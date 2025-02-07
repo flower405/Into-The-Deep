@@ -15,28 +15,33 @@ public class RedRight {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(10, -68, Math.toRadians(90)))
-                .splineToConstantHeading(new Vector2d(0, -30), Math.toRadians(90))
-                        // place first speciman
-                        .strafeTo(new Vector2d(40, -50))
-                        // stop and put up slides
-                        .strafeTo(new Vector2d(40, -60))
-                // pick up speciman
-                        .strafeToLinearHeading(new Vector2d(0, -45), Math.toRadians(270))
-                // put slides up
-                                .strafeTo(new Vector2d(0, -30))
-                // drop speciman
-                                .strafeTo(new Vector2d(40, -60))
-                                // park
+                .splineToConstantHeading(new Vector2d(0, -30), Math.toRadians(90)) // place first speciman
+                .lineToY(-46) // push first sample into area
+               .splineToConstantHeading(new Vector2d(35, -38), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(35, -20), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(42, -10), Math.toRadians(90))
+                .lineToY(-63)
+             //   .lineToY(-46) // place second sample in area then pickup second  speciman
+             //   .splineToConstantHeading(new Vector2d(42, -10), Math.toRadians(90))
+             //   .splineToConstantHeading(new Vector2d(50, -10), Math.toRadians(90))
+
+                .strafeToLinearHeading(new Vector2d(3,-30), Math.toRadians(90)) // place second speciman
+                .strafeToLinearHeading(new Vector2d(40, -63), Math.toRadians(90)) // pick up third speicman
+                .strafeToLinearHeading(new Vector2d(6, -30), Math.toRadians(90)) // place third speciman
+                                .strafeToLinearHeading(new Vector2d(45, -52), Math.toRadians(90))
 
 
-
-
-                        //stop and transfer
-                      //  .lineToY(-25)
-                // drop speciman 2
-                     //   .lineToY(-43)
-                     //    .splineTo(new Vector2d(50, -52), Math.toRadians(90))
-                        .build());
+             //   .lineToY(-60)
+              //  .lineToY(-52)
+             //   .splineToConstantHeading(new Vector2d(10, -36), Math.toRadians(90))
+             //   .lineToY(-46)
+             //   .splineToConstantHeading(new Vector2d(35, -38), Math.toRadians(90))
+             //   .splineToConstantHeading(new Vector2d(35, -20), Math.toRadians(90))
+              //  .splineToConstantHeading(new Vector2d(54, -10), Math.toRadians(90))
+             //   .lineToY(-52)
+              //  .splineToConstantHeading(new Vector2d(10, -36), Math.toRadians(90))
+             //   .lineToY(-46)
+                .build());
 
 
 

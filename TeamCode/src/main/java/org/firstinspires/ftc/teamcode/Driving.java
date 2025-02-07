@@ -46,39 +46,24 @@ public class Driving extends OpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
     private DcMotor leftLift = null;
-
-    // private Limelight3A limelight;
-    private CRServo Intake = null;
-
-
-    //  SparkFunOTOS myOtos;
+    private CRServo spinny1 = null;
+    private Servo IntakePincher = null;
     private Servo SlideServoLeft = null;
     private Servo SlideServoRight = null;
     private Servo IntakeFlip = null;
-
-    private Servo LeftArm = null;
-      private Servo RightArm = null;
-
-    private Servo ClawRotate = null;
-
+   private Servo LeftArm = null;
+    private Servo RightArm = null;
+    private Servo ClawWrist = null;
+    private Servo ClawElbow = null;
     private Servo OuttakePincher = null;
-
-    private Servo IntakePincher = null;
-
-
     private int liftOffset = 0;
-
     private int liftHeight = 0;
     private int storeLiftHeight = 0;
-
     private boolean liftIncrease = false;
-
     private boolean liftDecrease = false;
-
+    private DigitalChannel breakBeam = null;
     PidControl2 lift = new PidControl2();
 
-    //funny little comment
-    // for dumping the cubey things in the bucket
     private enum BucketState {
         IDLE,
         HORIZONTAL_EXTEND,
@@ -86,9 +71,11 @@ public class Driving extends OpMode {
         INTAKE_PINCHER_CLOSE,
         HORIZONTAL_RETRACT,
         SAMPLE_TRANSFER,
+        SAMPLE_PINCH,
         LIFT_EXTEND,
         CLAW_READY,
-        VERTICAL_ADJUSMENT,
+        CLAW_READY_FRONT,
+
         SAMPLE_DUMP,
         LIFT_RETRACT,
         ARM_RETRACT,
@@ -126,18 +113,20 @@ public class Driving extends OpMode {
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back");
         leftLift = hardwareMap.get(DcMotorEx.class, "left_lift");
-        //  limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
-        Intake = hardwareMap.get(CRServo.class, "Intake");
-        //    myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
+        spinny1 = hardwareMap.get(CRServo.class, "spinny1");
+        IntakePincher = hardwareMap.get(Servo.class, "IntakePincher");
         SlideServoLeft = hardwareMap.get(Servo.class, "SlideServoLeft");
         SlideServoRight = hardwareMap.get(Servo.class, "SlideServoRight");
         IntakeFlip = hardwareMap.get(Servo.class, "Intake_Flip");
-        LeftArm = hardwareMap.get(Servo.class, "Left_Arm");
         RightArm = hardwareMap.get(Servo.class, "Right_Arm");
-        ClawRotate = hardwareMap.get(Servo.class, "Claw_Rotate");
-        IntakePincher = hardwareMap.get(Servo.class, "Intake_Pincher");
+        LeftArm = hardwareMap.get(Servo.class, "Left_Arm");
+        ClawWrist = hardwareMap.get(Servo.class, "Claw_Wrist");
+        ClawElbow = hardwareMap.get(Servo.class, "Claw_Elbow");
         OuttakePincher = hardwareMap.get(Servo.class, "Outtake_Pincher");
+        breakBeam = hardwareMap.get(DigitalChannel.class, "break_beam");
+
+
 
 
 
@@ -152,9 +141,10 @@ public class Driving extends OpMode {
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
         SlideServoLeft.setDirection(Servo.Direction.REVERSE);
-        LeftArm.setDirection(Servo.Direction.REVERSE);
-        ClawRotate.setDirection(Servo.Direction.REVERSE);
-        IntakePincher.setDirection(Servo.Direction.REVERSE);
+        RightArm.setDirection(Servo.Direction.REVERSE);
+        IntakeFlip.setDirection(Servo.Direction.REVERSE);
+
+
 
 
 
@@ -168,14 +158,7 @@ public class Driving extends OpMode {
 
         lift.initTele(hardwareMap);
 
-        // limelight set up
-        //  telemetry.setMsTransmissionInterval(11);
 
-
-        //   limelight.pipelineSwitch(0);
-
-
-        //   limelight.start();
 
 
     }
@@ -212,130 +195,122 @@ public class Driving extends OpMode {
         telemetry.addData("liftHeight",liftHeight);
         lift.setHeight(liftHeight +liftOffset);
         telemetry.addData("lift State",bucketState);
-        telemetry.addData("ClawRotate", ClawRotate.getPosition());
+        telemetry.addData("ClawRotate", ClawWrist.getPosition());
+        telemetry.addData("breakBeam", breakBeam.getState());
+        telemetry.addData("ClawElbow", ClawElbow.getPosition());
+        telemetry.addData("LeftArm", LeftArm.getPosition());
+        telemetry.addData("RightArm", RightArm.getPosition());
 
 
 
-// see I use comments not for anything useful but I am using it
+        if (!breakBeam.getState()) {
+            gamepad1.rumble(200);
+            gamepad2.rumble(200);
+        }
+
 
 
         switch (bucketState) {
             case IDLE:  // start positions
-                LeftArm.setPosition(0.35); //I adjusted the idle position so we can flip intake down without hitting the arm
-                RightArm.setPosition(0.35);
+                LeftArm.setPosition(0.5);
+                RightArm.setPosition(0.5);
+                ClawElbow.setPosition(0.7);
+                ClawWrist.setPosition(0);
                 SlideServoLeft.setPosition(0);
                 SlideServoRight.setPosition(0);
-                ClawRotate.setPosition(0.3);
-                IntakePincher.setPosition(0.3);
-                OuttakePincher.setPosition(0);
-                IntakeFlip.setPosition(0);
-                storeLiftHeight = LiftConstants.liftRetracted;
+                OuttakePincher.setPosition(0.1);
+                IntakeFlip.setPosition(0.6);
+                IntakePincher.setPosition(0); // find this postion
+                liftHeight = LiftConstants.liftRetracted;
                 bucketState = BucketState.HORIZONTAL_EXTEND;
                 break;
             case HORIZONTAL_EXTEND: // extending horiztonal lifts and flipping intake out
                 if (gamepad1.left_bumper) {
-                    LeftArm.setPosition(0.35);
-                    RightArm.setPosition(0.35);
                     SlideServoLeft.setPosition(0.2);
                     SlideServoRight.setPosition(0.2);
-                    BucketTimer.reset();
                     bucketState = BucketState.INTAKE;
+                    BucketTimer.reset();
                 }
                 if (gamepad1.left_trigger > 0.9) {
-                    LeftArm.setPosition(0.35);
-                    RightArm.setPosition(0.35);
                     SlideServoLeft.setPosition(0.5);
                     SlideServoRight.setPosition(0.5);
-                    BucketTimer.reset();
                     bucketState = BucketState.INTAKE;
+                    BucketTimer.reset();
                 }
                 if (gamepad1.right_trigger > 0.9) {
-                    LeftArm.setPosition(0.35);
-                    RightArm.setPosition(0.35);
                     SlideServoLeft.setPosition(0.75);
                     SlideServoRight.setPosition(0.75);
-                    BucketTimer.reset();
                     bucketState = BucketState.INTAKE;
-                } if (gamepad2.dpad_left) {
+                    BucketTimer.reset();
+                }
+                if (gamepad2.dpad_left) {
                     bucketState = BucketState.WALL_PICKUP;
-            }
-                break;
-            case INTAKE: // starting the roller an rejecting
-                if (BucketTimer.seconds() > 0.5) {
-                    //IntakeFlip.setPosition(0.52);
-                    bucketState = BucketState.INTAKE_PINCHER_CLOSE;
-                    Intake.setPower(1);
                 }
                 break;
-            case INTAKE_PINCHER_CLOSE:  // close pincher on sample and stop the roller
-
+            case INTAKE:
+                if (BucketTimer.seconds() > 0.2) {
+                    spinny1.setPower(-1);
+                    bucketState = BucketState.INTAKE_PINCHER_CLOSE;
+                }
+                break;
+            case INTAKE_PINCHER_CLOSE:
                 if (gamepad1.a) {
-                    IntakeFlip.setPosition(0.53);
+                    IntakeFlip.setPosition(0); // position
                 }
                 if (gamepad1.b) {
-                    IntakeFlip.setPosition(0);
+                    IntakeFlip.setPosition(0.5); // positon
                 }
-
-                if (gamepad2.b) {
-                    Intake.setPower(-1);
-                }
-                if (gamepad2.y) {
-                    Intake.setPower(1);
-                }
-
-
-                if (gamepad2.x) {
-                    Intake.setPower(0);
-                    IntakePincher.setPosition(0);
-                    BucketTimer.reset();
-                    bucketState = BucketState.HORIZONTAL_RETRACT;
-                }
-                if (gamepad1.left_bumper) { // so that you can switch between HS slide positions
-                    SlideServoLeft.setPosition(0.2);
-                    SlideServoRight.setPosition(0.2);
-                }
-                if (gamepad1.left_trigger > 0.9) {
-                    SlideServoLeft.setPosition(0.5);
-                    SlideServoRight.setPosition(0.5);
-                }
-                if (gamepad1.right_trigger > 0.9) {
-                    SlideServoLeft.setPosition(0.75);
-                    SlideServoRight.setPosition(0.75);
-                }
-                break;
-            case HORIZONTAL_RETRACT: // retract lift and flip back intake
-                if (BucketTimer.seconds() > 0.6) {
-                    IntakeFlip.setPosition(0); // change to actual position
-                    SlideServoLeft.setPosition(0);
-                    SlideServoRight.setPosition(0); //I changed the transfer position to better grab sample
-                    OuttakePincher.setPosition(0);
-                    BucketTimer.reset();
-                    bucketState = BucketState.SAMPLE_TRANSFER;
-                }
+               if (gamepad2.b) {
+                   spinny1.setPower(-1);
+               }
+               if (gamepad2.y) {
+                   spinny1.setPower(1);
+               }
+               if (gamepad2.x) {
+                   spinny1.setPower(0);
+                   IntakePincher.setPosition(0.3); // close position
+                   BucketTimer.reset();
+                   bucketState = BucketState.HORIZONTAL_RETRACT;
+               }
+               if (gamepad1.left_bumper) {
+                   SlideServoLeft.setPosition(0.2);
+                   SlideServoRight.setPosition(0.2);
+               }
+               if (gamepad1.left_trigger > 0.9) {
+                   SlideServoLeft.setPosition(0.5);
+                   SlideServoRight.setPosition(0.5);
+               }
+               if (gamepad1.right_trigger > 0.9) {
+                   SlideServoLeft.setPosition(0.75);
+                   SlideServoRight.setPosition(0.75);
+               }
+               break;
+               case HORIZONTAL_RETRACT: // retract lift and flip back intake
+               if (BucketTimer.seconds() > 0.5) {
+                   IntakeFlip.setPosition(0.5); // up position
+                   SlideServoLeft.setPosition(0);
+                   SlideServoRight.setPosition(0);
+                   OuttakePincher.setPosition(0.1);
+                   liftHeight = LiftConstants.liftRetracted;
+                   BucketTimer.reset();
+                   bucketState = BucketState.SAMPLE_TRANSFER;
+               }
                 break;
             case SAMPLE_TRANSFER: // arm goes from idle to pick up cube and go back to idle
-               if (BucketTimer.seconds()> 0.5) {
-                   IntakePincher.setPosition(0.3);
-                   ClawRotate.setPosition(0.6);
+               if (BucketTimer.seconds()> 0.4) {
+                   ClawElbow.setPosition(0.65);
+                   IntakePincher.setPosition(0);// open claw
                }
-               if (BucketTimer.seconds() > 1.2) {
-                    LeftArm.setPosition(0.4);
-                    RightArm.setPosition(0.4);
+               if (BucketTimer.seconds() > 0.6) {
+                   LeftArm.setPosition(0.44);
+                   RightArm.setPosition(0.44);
                }
-                if (BucketTimer.seconds() > 1.8) {
-                    OuttakePincher.setPosition(0.4);
-                }
-                if (BucketTimer.seconds() > 2) {
-                    LeftArm.setPosition(0.2);
-                    RightArm.setPosition(0.2);
-                    bucketState = BucketState.LIFT_EXTEND;
-                } if (BucketTimer.seconds() > 2.4) {
-                ClawRotate.setPosition(0.3);
-            }
+               if (BucketTimer.seconds() > 1.1) {
+                   OuttakePincher.setPosition(0.6);
+                   bucketState = BucketState.LIFT_EXTEND;
+               }
                 break;
             case LIFT_EXTEND: // extending vertical slides
-
-
                 if (gamepad2.left_bumper) {
                     bucketState = BucketState.CLAW_READY;
                     liftHeight = LiftConstants.LowBucket;
@@ -347,24 +322,29 @@ public class Driving extends OpMode {
                     BucketTimer.reset();
 
                 }
+                if (gamepad2.left_trigger > 0.9) {
+                    liftHeight = LiftConstants.HighBucket;
+                    bucketState = BucketState.CLAW_READY_FRONT;
+                    BucketTimer.reset();
+                }
                 if (gamepad1.left_bumper) { // so that you can go back to extending the horizontal slides
                     SlideServoLeft.setPosition(0.2);
                     SlideServoRight.setPosition(0.2);
-                    IntakeFlip.setPosition(0.6);
+                    IntakeFlip.setPosition(0);
                     BucketTimer.reset();
                     bucketState = BucketState.INTAKE;
                 }
                 if (gamepad1.left_trigger > 0.9) {
                     SlideServoLeft.setPosition(0.5);
                     SlideServoRight.setPosition(0.5);
-                    IntakeFlip.setPosition(0.6);
+                    IntakeFlip.setPosition(0);
                     BucketTimer.reset();
                     bucketState = BucketState.INTAKE;
                 }
                 if (gamepad1.right_trigger > 0.9) {
                     SlideServoLeft.setPosition(0.75);
                     SlideServoRight.setPosition(0.75);
-                    IntakeFlip.setPosition(0.6);
+                    IntakeFlip.setPosition(0);
                     BucketTimer.reset();
                     bucketState = BucketState.INTAKE;
                 }
@@ -375,20 +355,38 @@ public class Driving extends OpMode {
                 }
                 break;
             case CLAW_READY:
+                if (BucketTimer.seconds() > 0.3) {
+                    RightArm.setPosition(0.9);
+                    LeftArm.setPosition(0.9);
+                }
                 if (BucketTimer.seconds() > 0.8) {
-                    LeftArm.setPosition(0);
-                    RightArm.setPosition(0);
-                    ClawRotate.setPosition(0);
+                    ClawWrist.setPosition(0);
+                    ClawElbow.setPosition(0);
                     bucketState = BucketState.SAMPLE_DUMP;
                 }
-                if (gamepad2.dpad_up) { //to reset in emergency
+                if (gamepad2.dpad_up) { // to reset in emergency
+                    BucketTimer.reset();
+                    bucketState = BucketState.EMERGENCY;
+                }
+                break;
+            case CLAW_READY_FRONT:
+                if (BucketTimer.seconds() > 0.3) {
+                    LeftArm.setPosition(0.6);
+                    RightArm.setPosition(0.6);
+                }
+                if (BucketTimer.seconds() > 0.8) {
+                    ClawWrist.setPosition(0);
+                    ClawElbow.setPosition(0.7);
+                    bucketState = BucketState.SAMPLE_DUMP;
+                }
+                if (gamepad2.dpad_up) {
                     BucketTimer.reset();
                     bucketState = BucketState.EMERGENCY;
                 }
                 break;
             case SAMPLE_DUMP: // adjusting height
                 if (gamepad2.dpad_down) {
-                    OuttakePincher.setPosition(0);
+                    OuttakePincher.setPosition(0.1);
                     BucketTimer.reset();
                     bucketState = BucketState.ARM_RETRACT;
                 }
@@ -404,20 +402,21 @@ public class Driving extends OpMode {
                 }
                 break;
             case ARM_RETRACT:
-                if (BucketTimer.seconds() > 0.5) {
-                    LeftArm.setPosition(0.3);
-                    RightArm.setPosition(0.3);
-                    ClawRotate.setPosition(0.3);
+                if (BucketTimer.seconds() > 0.8) {
+                    RightArm.setPosition(0.5);
+                    LeftArm.setPosition(0.5);
+                    ClawWrist.setPosition(0); // find this position
+                    ClawElbow.setPosition(0.7); // find this position
                     BucketTimer.reset();
                     bucketState = BucketState.LIFT_RETRACT;
                 }
+                break;
             case LIFT_RETRACT:
                 if (BucketTimer.seconds() > 0.5) {
                     liftHeight = LiftConstants.liftRetracted;
                     bucketState = BucketState.IDLE;
                 }
                 break;
-
             case WALL_PICKUP:
                 if (gamepad2.dpad_left) {
                     liftHeight = LiftConstants.LiftSpickup;
@@ -427,89 +426,77 @@ public class Driving extends OpMode {
                 }
                 break;
             case ARM_FLIP:
-                if (SpecimanTimer.seconds() > 0) {
-                    LeftArm.setPosition(0.7);
-                    RightArm.setPosition(0.7);
-                    ClawRotate.setPosition(0.65);
-                    OuttakePincher.setPosition(0);
+                if (SpecimanTimer.seconds() > 0.4) {
+                    RightArm.setPosition(0.1);
+                    LeftArm.setPosition(0.1);
+                    ClawWrist.setPosition(0); // find this position
+                    OuttakePincher.setPosition(0.1);
+                    ClawElbow.setPosition(0.65); // find this position
                     SpecimanTimer.reset();
                     bucketState = BucketState.CUBE_PICKUP;
                 }
                 break;
             case CUBE_PICKUP: // pickup cube and swing arm around
                 if (gamepad2.a) {
-                    OuttakePincher.setPosition(0.4);
+                    OuttakePincher.setPosition(0.5);
                     SpecimanTimer.reset();
                     bucketState = BucketState.FRONT_BACK_TRANSFER;
                 }
                 break;
             case FRONT_BACK_TRANSFER:
-                if (SpecimanTimer.seconds() > 0.2) {
+                if (SpecimanTimer.seconds() > 0.6) {
                     liftHeight = LiftConstants.HighRung;
                 }
-                if (SpecimanTimer.seconds() > 1.5) {
-                  //  LeftArm.setPosition(0.2);
-                 //   RightArm.setPosition(0.2);
-                    ClawRotate.setPosition(0.65);
+                if (SpecimanTimer.seconds() > 0.7) {
+                   LeftArm.setPosition(0.45);
+                   RightArm.setPosition(0.45);
+                    ClawWrist.setPosition(0.67); // find this position
+                    ClawElbow.setPosition(0.0); // find this position
                     SpecimanTimer.reset();
                     bucketState = BucketState.BAR_HANG;
                 }
                 break;
             case BAR_HANG:
-                if (gamepad2.right_stick_y < -0.6 && !liftIncrease) {
-                    liftHeight += 125;
-                    liftIncrease = true;
-                } else if (gamepad2.right_stick_y > -0.6 ) {
-                    liftIncrease = false;
-                }
-
-                if (gamepad2.right_stick_y > 0.6 && !liftDecrease) {
-                liftHeight -= 125;
-                liftDecrease = true;
-            } else if (gamepad2.right_stick_y < 0.6) {
-                    liftDecrease = false;
-                }
-
-//                if (gamepad1.dpad_left) {
-//                    liftHeight = LiftConstants.SpecimanDrop;
-//                    LeftArm.setPosition(0.1);
-//                    RightArm.setPosition(0.1);
-//                    ClawRotate.setPosition(0.1);
-//                }
-
-                //  liftHeight = LiftConstants.SpecimanDrop;
-                     // LeftArm.setPosition(0.85);
-                    telemetry.addData("We made it to Bar hang case", "");
-                   //  RightArm.setPosition(0.85);
-                    SpecimanTimer.reset();
-                   // bucketState = BucketState.SPECIMAN_DROP;
                 if (gamepad2.y) {
-                     bucketState = BucketState.SPECIMAN_DROP;
+                    bucketState = BucketState.SPECIMAN_DROP;
+                    BucketTimer.reset();
                 }
 
                 break;
             case SPECIMAN_DROP: // dropping the cube off
-                if (gamepad2.y) {
-                    OuttakePincher.setPosition(0);
+//                if (gamepad2.y) {
+//                    OuttakePincher.setPosition(0.1);
+//                    bucketState = BucketState.SLIFT_RETRACT;
+//                    SpecimanTimer.reset();
+//                }
+                if (BucketTimer.seconds() > 0.1) {
+                    liftHeight = LiftConstants.SpecimanDrop;
+                    ClawElbow.setPosition(0.3);
+                }
+                if (BucketTimer.seconds() > 0.4) {
+                    OuttakePincher.setPosition(0.1);
+                    BucketTimer.reset();
                     bucketState = BucketState.SLIFT_RETRACT;
-                    SpecimanTimer.reset();
                 }
                 break;
             case SLIFT_RETRACT:
-                if (SpecimanTimer.seconds() > 0.5) {
-                    LeftArm.setPosition(0.55);
-                    RightArm.setPosition(0.55);
-                    ClawRotate.setPosition(0.3);
+                if (BucketTimer.seconds() > 0.5) {
+                    RightArm.setPosition(0.6);
+                    ClawWrist.setPosition(0.6); // find this position
+                    ClawElbow.setPosition(0.7); // find this position
+                    ClawWrist.setPosition(0);
                 }
-                if (SpecimanTimer.seconds() > 0.7) {
+                if (BucketTimer.seconds() > 1) {
                     liftHeight = LiftConstants.liftRetracted;
                     bucketState = BucketState.IDLE;
                 }
                 break;
             case EMERGENCY: //to reset just in case
-                RightArm.setPosition(0.3);
-                LeftArm.setPosition(0.3);
-                ClawRotate.setPosition(0.3);
+                RightArm.setPosition(0.5);
+                LeftArm.setPosition(0.5);
+                ClawWrist.setPosition(0.5); // find this position
+                ClawElbow.setPosition(0.7); // find this position
+                ClawWrist.setPosition(0);
                 if (BucketTimer.seconds() > 1) {
                     liftHeight = LiftConstants.liftRetracted;
                     bucketState = BucketState.IDLE;
@@ -519,36 +506,6 @@ public class Driving extends OpMode {
                 bucketState = BucketState.IDLE;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @Override
     public void stop() {

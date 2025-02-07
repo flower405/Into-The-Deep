@@ -42,21 +42,24 @@ public class ServoTest extends OpMode {
 
 
 
-    private CRServo Intake = null;
+
     private Servo SlideServoLeft = null;
     private Servo SlideServoRight = null;
     private Servo IntakeFlip = null;
 
+    private Servo ClawElbow = null;
+    private Servo ClawWrist = null;
+
     private Servo LeftArm = null;
     private Servo RightArm = null;
 
-    private Servo ClawRotate = null;
+
 
     private Servo OuttakePincher = null;
 
     private Servo IntakePincher = null;
 
-    private CRServo Reject = null;
+   private CRServo spinny1 = null;
 
 
 
@@ -84,23 +87,28 @@ public class ServoTest extends OpMode {
 
 
         //  limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        Intake = hardwareMap.get(CRServo.class, "Intake");
+
         SlideServoLeft = hardwareMap.get(Servo.class, "SlideServoLeft");
         SlideServoRight = hardwareMap.get(Servo.class, "SlideServoRight");
         IntakeFlip = hardwareMap.get(Servo.class, "Intake_Flip");
         LeftArm = hardwareMap.get(Servo.class, "Left_Arm");
         RightArm = hardwareMap.get(Servo.class, "Right_Arm");
-        ClawRotate = hardwareMap.get(Servo.class, "Claw_Rotate");
-        IntakePincher = hardwareMap.get(Servo.class, "Intake_Pincher");
+        ClawElbow = hardwareMap.get(Servo.class, "Claw_Elbow");
+        ClawWrist = hardwareMap.get(Servo.class, "Claw_Wrist");
+        spinny1 = hardwareMap.get(CRServo.class, "spinny1");
+
+
         OuttakePincher = hardwareMap.get(Servo.class, "Outtake_Pincher");
-        Reject = hardwareMap.get(CRServo.class, "Reject");
+        IntakePincher = hardwareMap.get(Servo.class, "IntakePincher");
+
 
 
 
         SlideServoLeft.setDirection(Servo.Direction.REVERSE);
-        LeftArm.setDirection(Servo.Direction.REVERSE);
-        IntakePincher.setDirection(Servo.Direction.REVERSE);
-        ClawRotate.setDirection(Servo.Direction.REVERSE);
+        RightArm.setDirection(Servo.Direction.REVERSE);
+        IntakeFlip.setDirection(Servo.Direction.REVERSE);
+
+
 
 
 
@@ -132,47 +140,30 @@ public class ServoTest extends OpMode {
     public void loop() {
 
 
-if (gamepad1.left_bumper) {
-   LeftArm.setPosition(0);
+
+if (gamepad2.left_bumper) {
+    LeftArm.setPosition(0);
     RightArm.setPosition(0);
-} if (gamepad1.right_bumper) {
-            LeftArm.setPosition(0.);
-            RightArm.setPosition(0.5);
-        } if (gamepad1.right_trigger > 0.9) {
-            LeftArm.setPosition(0.4);
-         RightArm.setPosition(0.4);
-        } if (gamepad1.left_trigger > 0.9) {
-            LeftArm.setPosition(0.7);
-           RightArm.setPosition(0.7);
-        }
+   // find this postion
+    // idle 0.3
+}
+
+if (gamepad2.right_bumper) {
+    LeftArm.setPosition(0.25);
+    RightArm.setPosition(0.25);
+}
+
+if (gamepad2.left_trigger > 0.9) {
+    LeftArm.setPosition(0.45);
+    RightArm.setPosition(0.45);
+}
+
+if (gamepad2.right_trigger > 0.9) {
+    LeftArm.setPosition(0.7);
+    RightArm.setPosition(0.7);
+}
 
 
-//      if (gamepad1.left_bumper) {
-//          LeftArm.setPosition(0.1);
-//          RightArm.setPosition(0.1);
-//ClawRotate.setPosition(0.1);
-//      } if (gamepad1.right_bumper) {
-//            LeftArm.setPosition(1);
-//            RightArm.setPosition(1);
-//            ClawRotate.setPosition(0.35);
-//        } if (gamepad1.left_trigger > 0.9) {
-//                SlideServoLeft.setPosition(0.1);
-//                SlideServoRight.setPosition(0.1);
-//              LeftArm.setPosition(0.45);
-//                RightArm.setPosition(0.45);
-//            ClawRotate.setPosition(0.0);
-//        } if (gamepad1.a) {
-//            LeftArm.setPosition(0.73);
-//            RightArm.setPosition(0.73);
-//            ClawRotate.setPosition(0.2);
-//        }
-
-
-// picking up speciman = 0
-        // arm idle = 0.55
-        // pciking up cube from intake = 0.47
-        // dropping off bucket = 1
-        // dropping off specima = 0.73
 
 // see I use comments not for anything useful but I am using it
 

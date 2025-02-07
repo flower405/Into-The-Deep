@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -30,16 +31,29 @@ public class RedRightAsync extends LinearOpMode {
     private IMU imu = null;
     PidControl2 lift = new PidControl2();
     private int liftHeight, storeLiftHeight = 0;
-    ElapsedTime imuTimer = new ElapsedTime();
+    ElapsedTime SpecimanStartTimer = new ElapsedTime();
+    ElapsedTime SpecimanTimer = new ElapsedTime();
 
-    ElapsedTime liftTimer = new ElapsedTime();
+    ElapsedTime SpecimanTransferTimer = new ElapsedTime();
     private Servo LeftArm, RightArm, ClawRotate, OuttakePincher = null;
     private DcMotor leftLift = null;
     private boolean ReadyToClose = false;
     private boolean ReadyToDrop = false;
 
+    private enum specimanstart {
+        SPECIMAN_READY,
+        SPECIMAN_DROP,
+        LIFT_IDLE
+    }
 
 
+    private enum SPECIMANSEQUENCE {
+        PICKUP_READY,
+        CLOSE_PINCHER,
+        TRANSFER,
+        DROP,
+        RETRACT
+    }
 
 
     @Override
@@ -48,36 +62,45 @@ public class RedRightAsync extends LinearOpMode {
         SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, initialPose);
         //Define robots starting position and orientation
 
+        TrajectoryActionBuilder Speciman1 = drive.actionBuilder(initialPose) // place first speciman
+                .afterTime(0, telemetryPacket -> {
+                    liftHeight = LiftConstants.HighRung;
+                    return false;
+                })
+                .splineToConstantHeading(new Vector2d(0, -30), Math.toRadians(90));
 
-        Action TrajectoryActionBar1 = drive.actionBuilder(initialPose)
-                .lineToY(-43)
-                .build();
-        // this is going to second bar
+        Action TrajectoryActionSpeciamn1 = Speciman1.build();
 
-        Action TrajectoryActionSample1 = drive.actionBuilder(drive.pose)
-                .lineToY(-46)
+        TrajectoryActionBuilder Sample1 = Speciman1.endTrajectory().fresh() // pick up first sample
+                .lineToY(-46) // push first sample into area
                 .splineToConstantHeading(new Vector2d(35, -38), Math.toRadians(90))
                 .splineToConstantHeading(new Vector2d(35, -20), Math.toRadians(90))
                 .splineToConstantHeading(new Vector2d(42, -10), Math.toRadians(90))
-                .lineToY(-52)
-                .build();
-        // this goes from bar to pushing sample into the park area, after this pick up second speciman
+                .lineToY(-63);
 
-        Action TrajectoryActionSpeciman2 = drive.actionBuilder(drive.pose)
-                .splineToConstantHeading(new Vector2d(10, -36), Math.toRadians(90))
-                .build();
-        // this is just to bar now go push second sample
+        Action TrajectoryActionSample1 = Sample1.build();
 
-        Action TrajectoryActionSample2 = drive.actionBuilder(drive.pose)
-                .lineToY(-46)
-                .splineToConstantHeading(new Vector2d(35, -38), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(35, -20), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(54, -10), Math.toRadians(90))
-                .lineToY(-52)
-                .build();
-        // this is then pushing second sample into park area and park
+        TrajectoryActionBuilder Speciman2 = Sample1.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(3,-30), Math.toRadians(90));
 
-        // lift init
+        Action TrajectoryActionSpeciman2 = Speciman2.build();
+
+        TrajectoryActionBuilder Speciamn3pickup = Speciman2.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(40, -63), Math.toRadians(90));
+
+        Action TrajectoryActionSpeciamn3pickup = Speciamn3pickup.build();
+
+        TrajectoryActionBuilder Speciman3 = Speciamn3pickup.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(6, -30), Math.toRadians(90));
+
+        Action TrajectoryActionSpeciman3 = Speciman3.build();
+
+        TrajectoryActionBuilder Park = Speciman3.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(45, -52), Math.toRadians(90));
+
+        Action TrajectoryActionPark = Park.build();
+
+
         leftLift = hardwareMap.get(DcMotorEx.class, "left_lift");
         LeftArm = hardwareMap.get(Servo.class, "Left_Arm");
         RightArm = hardwareMap.get(Servo.class, "Right_Arm");
@@ -98,18 +121,20 @@ public class RedRightAsync extends LinearOpMode {
         if (isStopRequested()) return;
 
 
-        Actions.runBlocking(
-                new ParallelAction(
-                        TrajectoryActionBar1
 
 
-                ));
+
+
+
 
 
 
 
 
     }
+
+
+
 }
 
 

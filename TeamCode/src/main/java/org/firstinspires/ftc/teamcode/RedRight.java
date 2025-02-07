@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -40,7 +41,6 @@ public class RedRight extends LinearOpMode {
     private DcMotor leftLift = null;
 
     private boolean ReadyToClose = false;
-
     private boolean ReadyToDrop = false;
     private int liftOffset = 0;
 
@@ -58,12 +58,10 @@ public class RedRight extends LinearOpMode {
         LIFT_EXTEND2,
         DRIVE_ARM_TRANSFER,
         ARM_TRANSFER2,
-
         DRIVE_BAR2,
         SPECIMAN_DROP2,
         BACK_UP,
         LIFT_RETRACT2,
-
         PARK
 
 
@@ -75,18 +73,17 @@ public class RedRight extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d initialPose = new Pose2d(10,-61, Math.toRadians(90));
+        Pose2d initialPose = new Pose2d(10,-60, Math.toRadians(90));
         SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, initialPose);
         //Define robots starting position and orientation
 
 
-        TrajectoryActionBuilder Bar1 = drive.actionBuilder(initialPose)
-        .splineToConstantHeading(new Vector2d(0, -32), Math.toRadians(90));
+        TrajectoryActionBuilder Bar1 = drive.actionBuilder(initialPose) // drop prload cube
+         .splineToConstantHeading(new Vector2d(0, -32), Math.toRadians(90));
 
         Action TrajectoryActionBar1 = Bar1.build();
-        // place speciman on bar
 
-        TrajectoryActionBuilder Speciman2Ready = Bar1.endTrajectory().fresh()
+        TrajectoryActionBuilder Speciman2Ready = Bar1.endTrajectory().fresh() // go to pick up second specian
                 .strafeTo(new Vector2d(40, -50));
 
         Action TrajectoryActionSpeciman2Ready = Speciman2Ready.build();
@@ -109,23 +106,15 @@ public class RedRight extends LinearOpMode {
 
      TrajectoryActionBuilder BackUp = Bar2.endTrajectory().fresh()
              .strafeTo(new Vector2d(5, -40))
+             .afterTime(2, telemetryPacket -> {
+                 liftState = LiftState.LIFT_EXTEND1;
+                 return false;
+             })
             .strafeToLinearHeading(new Vector2d(45, -52), Math.toRadians(90));
 
      Action TrajectoryBackUp = BackUp.build();
 
 
-
-    // TrajectoryActionBuilder Park = BackUp.endTrajectory().fresh()
-            // .strafeToLinearHeading(new Vector2d(40, -60), Math.toRadians(90));
-
-     // Action TrajectoryPark = Park.build();
-
-
-
-
-
-
-        // this is then pushing second sample into park area and park
 
         // lift init
         leftLift = hardwareMap.get(DcMotorEx.class, "left_lift");
@@ -159,6 +148,19 @@ public class RedRight extends LinearOpMode {
         telemetry.addData("lift State",liftState);
         telemetry.update();
 
+        Actions.runBlocking(
+              new ParallelAction(
+                      TrajectoryActionBar1
+
+              )
+        );
+
+
+
+
+
+
+
         while(liftState != LiftState.PARK){
         switch (liftState) {
             case CLOSE_PINCHER1:
@@ -168,7 +170,7 @@ public class RedRight extends LinearOpMode {
                 ClawRotate.setPosition(0.35);
                 OuttakePincher.setPosition(0.4);
                 telemetry.update();
-                liftState = LiftState.LIFT_EXTEND1;
+               // liftState = LiftState.LIFT_EXTEND1;
                     break;
             case LIFT_EXTEND1:
                 if (liftTimer.seconds() > 0.2) {
@@ -344,17 +346,6 @@ liftState = LiftState.LIFT_RETRACT2;
                     telemetry.update();
                 }
                 break;
-//            case PARK:
-//                if (liftTimer.seconds() > 3.5) {
-//                    Actions.runBlocking(
-//                            new SequentialAction(
-//                                    TrajectoryPark
-//                            )
-//                    );
-//
-//            }
-//                break;
-
         }
           lift.setHeight(liftHeight);
         }

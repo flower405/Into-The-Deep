@@ -43,6 +43,10 @@ public class SparkFunOTOSDrive extends MecanumDrive {
 
         // Here we can set the linear and angular scalars, which can compensate for
         // scaling issues with the sensor measurements. Note that as of firmware
+
+
+
+
         // version 1.0, these values will be lost after a power cycle, so you will
         // need to set them each time you power up the sensor. They can be any value
         // from 0.872 to 1.127 in increments of 0.001 (0.1%). It is recommended to

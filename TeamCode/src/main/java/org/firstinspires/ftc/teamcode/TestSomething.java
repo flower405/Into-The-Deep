@@ -32,7 +32,6 @@ public class TestSomething extends LinearOpMode {
 
 
     ElapsedTime liftTimer = new ElapsedTime();
-    LiftState liftState = LiftState.CLOSE_PINCHER1;
 
 
     private Servo LeftArm, RightArm, ClawRotate, OuttakePincher = null;
@@ -44,24 +43,20 @@ public class TestSomething extends LinearOpMode {
     private int liftOffset = 0;
 
 
-    private enum LiftState {
-        CLOSE_PINCHER1,
-        LIFT_EXTEND1,
-        DRIVE_BAR_1,
-        SPECIMAN_DROP1,
-        LIFT_RETRACT1,
-        DRIVE_ARM_READY,
-        ARM_READY,
-        DRIVE_PICKUP_SPECIMAN2,
-        PICKUP_SPECIMAN2,
-        DRIVE_ARM_TRANSFER,
-        ARM_TRANSFER2,
-        LIFT_EXTEND2,
-        DRIVE_BAR2,
-        SPECIMAN_DROP2,
-        LIFT_RETRACT2,
-        PARK
 
+    private enum SPECIMANSTART {
+        SPECIMAN_READY,
+        SPECIMAN_DROP,
+        LIFT_IDLE
+    }
+
+
+
+    private enum SPECIMANDROP {
+        SPECIMAN_PICKUP,
+        CLOSE_OUTTAKE_PINCHER,
+        DROP_READY,
+        LIFT_RETURN_IDLE,
 
     }
 
@@ -166,6 +161,8 @@ public class TestSomething extends LinearOpMode {
 
 
 
+
+
         imu = hardwareMap.get(IMU.class, "imu");
         RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.UP);
         imu.initialize(new IMU.Parameters(RevOrientation));
@@ -179,7 +176,7 @@ public class TestSomething extends LinearOpMode {
         if (isStopRequested()) return;
         telemetry.addData("Position",leftLift.getCurrentPosition());
         telemetry.addData("liftHeight",liftHeight);
-        telemetry.addData("lift State",liftState);
+
         telemetry.update();
 
         Actions.runBlocking(
@@ -188,6 +185,14 @@ public class TestSomething extends LinearOpMode {
                      //   TrajectorySpeciman2Ready
                 )
         );
+
+
+
+
+
+
+
+
     }
 
 }
