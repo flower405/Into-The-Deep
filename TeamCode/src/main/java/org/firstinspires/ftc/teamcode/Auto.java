@@ -12,7 +12,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-
+@Disabled
 @Autonomous
 public class Auto extends LinearOpMode
 {

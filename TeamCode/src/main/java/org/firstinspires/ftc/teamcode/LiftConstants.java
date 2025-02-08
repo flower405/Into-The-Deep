@@ -14,13 +14,13 @@ public class LiftConstants {
 
     public static int[] liftFlat = {1550, 1500, 1450, 1400};
 
-    public static int LiftSpickup = 200;
+    public static int LiftSpickup = 250;
 
-    public static int BarAuto = 1200;
+    public static int BarAuto = 1000;
     public static int BarAuto2 = 1670;
 
-    public static int SpecimanDrop = 450;
-    public static int SpecimanDropAuto1= 850;
+    public static int SpecimanDrop = 500;
+    public static int SpecimanDropAuto= 450;
     public static int SpecimanDropAuto2= 750;
     public static int SpecimanDropAuto3 = 600;
 

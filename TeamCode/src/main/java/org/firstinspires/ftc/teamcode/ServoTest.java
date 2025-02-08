@@ -142,26 +142,20 @@ public class ServoTest extends OpMode {
 
 
 if (gamepad2.left_bumper) {
-    LeftArm.setPosition(0);
-    RightArm.setPosition(0);
-   // find this postion
-    // idle 0.3
+    OuttakePincher.setPosition(0.1);
+
 }
 
 if (gamepad2.right_bumper) {
-    LeftArm.setPosition(0.25);
-    RightArm.setPosition(0.25);
-}
+  OuttakePincher.setPosition(0.5);
+        }
+ if (gamepad2.left_trigger > 0.9) {
+     ClawWrist.setPosition(0);
+ }
+  if (gamepad2.right_trigger > 0.9) {
+      ClawWrist.setPosition(0.67);
+  }
 
-if (gamepad2.left_trigger > 0.9) {
-    LeftArm.setPosition(0.45);
-    RightArm.setPosition(0.45);
-}
-
-if (gamepad2.right_trigger > 0.9) {
-    LeftArm.setPosition(0.7);
-    RightArm.setPosition(0.7);
-}
 
 
 

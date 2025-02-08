@@ -19,28 +19,19 @@ public class RedRight {
                 .lineToY(-46) // push first sample into area
                .splineToConstantHeading(new Vector2d(35, -38), Math.toRadians(90))
                 .splineToConstantHeading(new Vector2d(35, -20), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(42, -10), Math.toRadians(90))
-                .lineToY(-63)
+                 .splineToConstantHeading(new Vector2d(47, -5), Math.toRadians(90))
+               // .lineToY(-63)
+
              //   .lineToY(-46) // place second sample in area then pickup second  speciman
              //   .splineToConstantHeading(new Vector2d(42, -10), Math.toRadians(90))
              //   .splineToConstantHeading(new Vector2d(50, -10), Math.toRadians(90))
 
-                .strafeToLinearHeading(new Vector2d(3,-30), Math.toRadians(90)) // place second speciman
-                .strafeToLinearHeading(new Vector2d(40, -63), Math.toRadians(90)) // pick up third speicman
-                .strafeToLinearHeading(new Vector2d(6, -30), Math.toRadians(90)) // place third speciman
-                                .strafeToLinearHeading(new Vector2d(45, -52), Math.toRadians(90))
+            //    .strafeToLinearHeading(new Vector2d(3,-30), Math.toRadians(90)) // place second speciman
+             //   .strafeToLinearHeading(new Vector2d(40, -63), Math.toRadians(90)) // pick up third speicman
+             //   .strafeToLinearHeading(new Vector2d(6, -30), Math.toRadians(90)) // place third speciman
+                       //         .strafeToLinearHeading(new Vector2d(45, -52), Math.toRadians(90))
 
 
-             //   .lineToY(-60)
-              //  .lineToY(-52)
-             //   .splineToConstantHeading(new Vector2d(10, -36), Math.toRadians(90))
-             //   .lineToY(-46)
-             //   .splineToConstantHeading(new Vector2d(35, -38), Math.toRadians(90))
-             //   .splineToConstantHeading(new Vector2d(35, -20), Math.toRadians(90))
-              //  .splineToConstantHeading(new Vector2d(54, -10), Math.toRadians(90))
-             //   .lineToY(-52)
-              //  .splineToConstantHeading(new Vector2d(10, -36), Math.toRadians(90))
-             //   .lineToY(-46)
                 .build());
 
 

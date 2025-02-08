@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -21,6 +22,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 // import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 // import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
+@Disabled
 
 @Autonomous
 public class RedRight extends LinearOpMode {
@@ -170,7 +172,7 @@ public class RedRight extends LinearOpMode {
                 ClawRotate.setPosition(0.35);
                 OuttakePincher.setPosition(0.4);
                 telemetry.update();
-               // liftState = LiftState.LIFT_EXTEND1;
+                liftState = LiftState.LIFT_EXTEND1;
                     break;
             case LIFT_EXTEND1:
                 if (liftTimer.seconds() > 0.2) {
@@ -197,7 +199,7 @@ public class RedRight extends LinearOpMode {
                     ClawRotate.setPosition(0.6);
                 }
                 if (liftTimer.seconds() > 1.2) {
-                    liftHeight = LiftConstants.SpecimanDropAuto1;
+                    liftHeight = LiftConstants.SpecimanDropAuto;
                 } if (liftTimer.seconds() > 1.5) {
                 liftHeight = LiftConstants.SpecimanDropAuto2;
             } if (liftTimer.seconds() > 1.8) {
@@ -306,7 +308,7 @@ public class RedRight extends LinearOpMode {
                //     ClawRotate.setPosition(0.6);
               //  }
                 if (liftTimer.seconds() > 0.5) {
-                    liftHeight = LiftConstants.SpecimanDropAuto1;
+                    liftHeight = LiftConstants.SpecimanDropAuto;
                 }
                 if (liftTimer.seconds() > 0.8) {
                 liftHeight = LiftConstants.SpecimanDropAuto2;
@@ -328,8 +330,8 @@ public class RedRight extends LinearOpMode {
                                     TrajectoryBackUp
                             )
                     );
-liftTimer.reset();
-liftState = LiftState.LIFT_RETRACT2;
+            liftTimer.reset();
+            liftState = LiftState.LIFT_RETRACT2;
                     telemetry.update();
                 }
             case LIFT_RETRACT2:

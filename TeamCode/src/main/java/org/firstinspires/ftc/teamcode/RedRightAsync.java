@@ -4,9 +4,11 @@ package org.firstinspires.ftc.teamcode;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -24,7 +26,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 // import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 // import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-
+@Disabled
 @Autonomous
 public class RedRightAsync extends LinearOpMode {
 
@@ -35,7 +37,7 @@ public class RedRightAsync extends LinearOpMode {
     ElapsedTime SpecimanTimer = new ElapsedTime();
 
     ElapsedTime SpecimanTransferTimer = new ElapsedTime();
-    private Servo LeftArm, RightArm, ClawRotate, OuttakePincher = null;
+    private Servo LeftArm, RightArm,  OuttakePincher = null;
     private DcMotor leftLift = null;
     private boolean ReadyToClose = false;
     private boolean ReadyToDrop = false;
@@ -104,7 +106,7 @@ public class RedRightAsync extends LinearOpMode {
         leftLift = hardwareMap.get(DcMotorEx.class, "left_lift");
         LeftArm = hardwareMap.get(Servo.class, "Left_Arm");
         RightArm = hardwareMap.get(Servo.class, "Right_Arm");
-        ClawRotate = hardwareMap.get(Servo.class, "Claw_Rotate");
+
         OuttakePincher = hardwareMap.get(Servo.class, "Outtake_Pincher");
 
 
@@ -121,7 +123,11 @@ public class RedRightAsync extends LinearOpMode {
         if (isStopRequested()) return;
 
 
-
+        Actions.runBlocking(
+                new SequentialAction(
+                        TrajectoryActionSpeciamn1
+                )
+        );
 
 
 
