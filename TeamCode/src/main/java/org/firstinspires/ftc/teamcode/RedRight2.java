@@ -21,7 +21,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 
 
 @Autonomous
-public class BlueRightMeet3 extends LinearOpMode {
+public class RedRight2 extends LinearOpMode {
 
     private IMU imu = null;
     PidControl2 lift = new PidControl2();
@@ -93,7 +93,7 @@ public class BlueRightMeet3 extends LinearOpMode {
 
 
         TrajectoryActionBuilder Speciamn3pickup = Speciman2.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(46, -54), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(46, -55), Math.toRadians(90));
 
         Action TrajectoryActionSpeciamn3pickup = Speciamn3pickup.build();
 
@@ -148,8 +148,8 @@ public class BlueRightMeet3 extends LinearOpMode {
         while (liftState != LiftState.DONE) {
             switch (liftState) {
                 case CLOSE_PINCHER1:
-                   SlideServoLeft.setPosition(0);
-                   SlideServoRight.setPosition(0);
+                    SlideServoLeft.setPosition(0);
+                    SlideServoRight.setPosition(0);
                     liftTimer.reset();
                     LeftArm.setPosition(0.52);
                     RightArm.setPosition(0.52);
@@ -194,24 +194,24 @@ public class BlueRightMeet3 extends LinearOpMode {
 
                     break;
                 case DRIVE_BEFORE_SAMPLE_PUSH:
-                  if (liftTimer.seconds() > 0.5) {
-                      Actions.runBlocking(
-                              new SequentialAction(
-                                      TrajectoryActionSample1beforePush,
-                                      TrajectoryActionSample1Push
-                              )
-                      );
-                      liftTimer.reset();
-                      liftState = LiftState.PICKUP_SPECIMAN2;
-                  }
+                    if (liftTimer.seconds() > 0.5) {
+                        Actions.runBlocking(
+                                new SequentialAction(
+                                        TrajectoryActionSample1beforePush,
+                                        TrajectoryActionSample1Push
+                                )
+                        );
+                        liftTimer.reset();
+                        liftState = LiftState.PICKUP_SPECIMAN2;
+                    }
                     break;
                 case PICKUP_SPECIMAN2:
                     if (liftTimer.seconds() > 0.2) {
                         OuttakePincher.setPosition(0.5);
                     }
-                  if (liftTimer.seconds() > 0.6) {
-                      liftHeight = LiftConstants.HighRung;
-                  }
+                    if (liftTimer.seconds() > 0.6) {
+                        liftHeight = LiftConstants.HighRung;
+                    }
                     if (liftTimer.seconds() > 0.9) {
                         ClawElbow.setPosition(0);
                         LeftArm.setPosition(0.5);
@@ -325,7 +325,7 @@ public class BlueRightMeet3 extends LinearOpMode {
             }
             lift.setHeight(liftHeight);
 
-            }
         }
-
     }
+
+}

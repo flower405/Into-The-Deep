@@ -29,13 +29,33 @@ public class LiftConstants {
     public static int SpecimanDrop2Auto3 = 200;
     public static int SpecimanDropAuto4 = 550;
 
+    // arm positions
+    public static double ArmIdle = 0.5;
+    public static double ArmTransfer = 0.41;
+    public static double ArmBucket = 0.9;
+    public static double ArmWall = 0.14;
+    public static double ArmRung = 0.5;
 
+    // elbow positions
+    public static double ElbowIdle = 0.7;
+    public static double ElbowTransfer = 0.65;
+    public static double ElbowBucket = 0;
+    public static double ElbowWall = 0.65;
+    public static double ElbowRung = 0.3;
 
-    public static double IntakePincherOpen = 0;
-    public static double OuttakePincherOpen = 0;
-    public static double OuttakePincherClose = 0.4;
-    public static double IntakePincherClose = 0.4;
-    public static double ClawReady = 0.4;
+    // wrist postion
+    public static double WristIdle = 0;
+    public static double WristSpeciman = 0.67;
+
+    // Horizontal slide postions
+    public static double HSIdle = 0;
+    public static double HSLow = 0.2;
+    public static double HSMedium = 0.5;
+    public static double HSHigh = 0.75;
+
+    // Intake flip
+    public static double IntakeDown = 0;
+    public static double IntakeUp = 0.6;
 
 
 

@@ -21,7 +21,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 
 
 @Autonomous
-public class RedRightmeet3 extends LinearOpMode {
+public class BlueRightmeet3 extends LinearOpMode {
 
     private IMU imu = null;
     PidControl2 lift = new PidControl2();
@@ -68,7 +68,7 @@ public class RedRightmeet3 extends LinearOpMode {
 
 
         TrajectoryActionBuilder Speciman1 = drive.actionBuilder(initialPose) // place first speciman
-                .splineToConstantHeading(new Vector2d(0, -40), Math.toRadians(90));
+                .splineToConstantHeading(new Vector2d(0, -39), Math.toRadians(90));
 
         Action TrajectoryActionSpeciamn1 = Speciman1.build();
 
@@ -81,29 +81,29 @@ public class RedRightmeet3 extends LinearOpMode {
         Action TrajectoryActionSample1beforePush = Sample1beforePush.build();
 
         TrajectoryActionBuilder Sample1Push = Sample1beforePush.endTrajectory().fresh() // pick up first sample
-                .lineToY(-57);
+                .lineToY(-58);
 
         Action TrajectoryActionSample1Push = Sample1Push.build();
 
 
         TrajectoryActionBuilder Speciman2 = Sample1Push.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(3, -25), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(3, -26.5), Math.toRadians(90));
 
         Action TrajectoryActionSpeciman2 = Speciman2.build();
 
 
         TrajectoryActionBuilder Speciamn3pickup = Speciman2.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(46, -54), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(46, -52), Math.toRadians(90));
 
         Action TrajectoryActionSpeciamn3pickup = Speciamn3pickup.build();
 
         TrajectoryActionBuilder Speciman3 = Speciamn3pickup.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(6, -24),Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(6, -23),Math.toRadians(90));
 
         Action TrajectoryActionSpeciman3 = Speciman3.build();
 
         TrajectoryActionBuilder Park = Speciman3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(49,-57),Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(49,-56),Math.toRadians(90));
 
         Action TrajectoryActionPark = Park.build();
 
@@ -148,8 +148,8 @@ public class RedRightmeet3 extends LinearOpMode {
         while (liftState != LiftState.DONE) {
             switch (liftState) {
                 case CLOSE_PINCHER1:
-                    SlideServoLeft.setPosition(0);
-                    SlideServoRight.setPosition(0);
+                   SlideServoLeft.setPosition(0);
+                   SlideServoRight.setPosition(0);
                     liftTimer.reset();
                     LeftArm.setPosition(0.52);
                     RightArm.setPosition(0.52);
@@ -194,24 +194,24 @@ public class RedRightmeet3 extends LinearOpMode {
 
                     break;
                 case DRIVE_BEFORE_SAMPLE_PUSH:
-                    if (liftTimer.seconds() > 0.5) {
-                        Actions.runBlocking(
-                                new SequentialAction(
-                                        TrajectoryActionSample1beforePush,
-                                        TrajectoryActionSample1Push
-                                )
-                        );
-                        liftTimer.reset();
-                        liftState = LiftState.PICKUP_SPECIMAN2;
-                    }
+                  if (liftTimer.seconds() > 0.5) {
+                      Actions.runBlocking(
+                              new SequentialAction(
+                                      TrajectoryActionSample1beforePush,
+                                      TrajectoryActionSample1Push
+                              )
+                      );
+                      liftTimer.reset();
+                      liftState = LiftState.PICKUP_SPECIMAN2;
+                  }
                     break;
                 case PICKUP_SPECIMAN2:
                     if (liftTimer.seconds() > 0.2) {
                         OuttakePincher.setPosition(0.5);
                     }
-                    if (liftTimer.seconds() > 0.6) {
-                        liftHeight = LiftConstants.HighRung;
-                    }
+                  if (liftTimer.seconds() > 0.6) {
+                      liftHeight = LiftConstants.HighRung;
+                  }
                     if (liftTimer.seconds() > 0.9) {
                         ClawElbow.setPosition(0);
                         LeftArm.setPosition(0.5);
@@ -268,10 +268,10 @@ public class RedRightmeet3 extends LinearOpMode {
                         OuttakePincher.setPosition(0.5);
                         telemetry.update();
                     }
-                    if (liftTimer.seconds() > 0.6) {
+                    if (liftTimer.seconds() > 0.9) {
                         liftHeight = LiftConstants.HighRung;
                     }
-                    if (liftTimer.seconds() > 0.9) {
+                    if (liftTimer.seconds() > 1.2) {
                         ClawElbow.setPosition(0);
                         LeftArm.setPosition(0.5);
                         RightArm.setPosition(0.5);
@@ -299,7 +299,7 @@ public class RedRightmeet3 extends LinearOpMode {
                     if (liftTimer.seconds() > 0.4) {
                         OuttakePincher.setPosition(0.1);
                     }
-                    if (liftTimer.seconds() > 0.8) {
+                    if (liftTimer.seconds() > 0.9) {
                         LeftArm.setPosition(0.5);
                         RightArm.setPosition(0.5);
                         ClawElbow.setPosition(0.7);
@@ -325,7 +325,7 @@ public class RedRightmeet3 extends LinearOpMode {
             }
             lift.setHeight(liftHeight);
 
+            }
         }
-    }
 
-}
+    }

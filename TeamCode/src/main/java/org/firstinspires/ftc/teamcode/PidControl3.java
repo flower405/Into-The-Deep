@@ -10,9 +10,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class PidControl2 {
+public class PidControl3 {
     DcMotorEx leftLift;
     DcMotorEx rightLift;
+
+    private Servo SlideServoLeft, SlideServoRight = null;
+    private Servo LeftArm, RightArm = null;
+    private Servo ClawWrist = null;
+    private Servo ClawElbow = null;
+    private Servo IntakeFlip = null;
+
 
 
     double integralSum =0;
@@ -44,13 +51,20 @@ public class PidControl2 {
 
 
 
-       // rightServo.setDirection(Servo.Direction.REVERSE);
+        // rightServo.setDirection(Servo.Direction.REVERSE);
 
     }
 
     public void initTele(HardwareMap hardwareMap) {
         leftLift = hardwareMap.get(DcMotorEx.class, "left_lift");
         rightLift = hardwareMap.get(DcMotorEx.class, "right_lift");
+        SlideServoLeft = hardwareMap.get(Servo.class, "SlideServoLeft");
+        SlideServoRight = hardwareMap.get(Servo.class, "SlideServoRight");
+        RightArm = hardwareMap.get(Servo.class, "Right_Arm");
+        LeftArm = hardwareMap.get(Servo.class, "Left_Arm");
+        ClawWrist = hardwareMap.get(Servo.class, "Claw_Wrist");
+        ClawElbow = hardwareMap.get(Servo.class, "Claw_Elbow");
+        IntakeFlip = hardwareMap.get(Servo.class, "Intake_Flip");
 
 
         leftLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -63,8 +77,9 @@ public class PidControl2 {
 
         leftLift.setDirection(DcMotorSimple.Direction.REVERSE);
         rightLift.setDirection(DcMotorSimple.Direction.FORWARD);
-//        SlideServoLeft.setDirection(Servo.Direction.REVERSE);
-//        LeftArm.setDirection(Servo.Direction.REVERSE);
+        SlideServoLeft.setDirection(Servo.Direction.REVERSE);
+        RightArm.setDirection(Servo.Direction.REVERSE);
+        IntakeFlip.setDirection(Servo.Direction.REVERSE);
 
 
         leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -92,20 +107,58 @@ public class PidControl2 {
         rightLift.setPower(power);
     }
 
+
+
     public void disableMotors() {
         leftLift.setPower(0);
         rightLift.setPower(0);
     }
 
+    public void Idle() {
+        SlideServoLeft.setPosition(LiftConstants.HSIdle);
+        SlideServoRight.setPosition(LiftConstants.HSIdle);
+        LeftArm.setPosition(LiftConstants.ArmIdle);
+        RightArm.setPosition(LiftConstants.ArmIdle);
+        ClawWrist.setPosition(LiftConstants.WristIdle);
+        ClawElbow.setPosition(LiftConstants.ElbowIdle);
+    }
 
+    public void HSLow() {
+        SlideServoLeft.setPosition(LiftConstants.HSLow);
+        SlideServoRight.setPosition(LiftConstants.HSLow);
+    }
+    public void HSMedium() {
+        SlideServoLeft.setPosition(LiftConstants.HSMedium);
+        SlideServoRight.setPosition(LiftConstants.HSMedium);
+    }
+    public void HSHigh() {
+        SlideServoLeft.setPosition(LiftConstants.HSHigh);
+        SlideServoRight.setPosition(LiftConstants.HSHigh);
+    }
 
+    public void HSRetract () {
+        SlideServoLeft.setPosition(LiftConstants.HSIdle);
+        SlideServoRight.setPosition(LiftConstants.HSIdle);
+        IntakeFlip.setPosition(LiftConstants.IntakeUp);
+    }
+    public void ArmTransfer() {
+        LeftArm.setPosition(LiftConstants.ArmTransfer);
+        RightArm.setPosition(LiftConstants.ArmTransfer);
+    }
 
+    public void WallPickup() {
+        LeftArm.setPosition(LiftConstants.ArmWall);
+        RightArm.setPosition(LiftConstants.ArmWall);
+        ClawElbow.setPosition(LiftConstants.ElbowWall);
+        ClawWrist.setPosition(LiftConstants.WristIdle);
+    }
 
-
-
-
-
-    //Rotates the wrist counter-clockwise to the next wrist position
+    public void SpecimanDrop() {
+        LeftArm.setPosition(LiftConstants.ArmRung);
+        RightArm.setPosition(LiftConstants.ArmRung);
+        ClawWrist.setPosition(LiftConstants.WristSpeciman);
+        ClawElbow.setPosition(LiftConstants.ElbowRung);
+    }
 
 
 
