@@ -45,7 +45,10 @@ public class ServoTest extends OpMode {
 
     private Servo SlideServoLeft = null;
     private Servo SlideServoRight = null;
-    private Servo IntakeFlip = null;
+    private Servo IntakeFlipLeft = null;
+
+    private Servo IntakeFlipRight = null;
+
 
     private Servo ClawElbow = null;
     private Servo ClawWrist = null;
@@ -90,7 +93,8 @@ public class ServoTest extends OpMode {
 
         SlideServoLeft = hardwareMap.get(Servo.class, "SlideServoLeft");
         SlideServoRight = hardwareMap.get(Servo.class, "SlideServoRight");
-        IntakeFlip = hardwareMap.get(Servo.class, "Intake_Flip");
+        IntakeFlipLeft = hardwareMap.get(Servo.class, "Intake_Flip_Left");
+        IntakeFlipRight = hardwareMap.get(Servo.class, "Intake_Flip_Right");
         LeftArm = hardwareMap.get(Servo.class, "Left_Arm");
         RightArm = hardwareMap.get(Servo.class, "Right_Arm");
         ClawElbow = hardwareMap.get(Servo.class, "Claw_Elbow");
@@ -106,7 +110,8 @@ public class ServoTest extends OpMode {
 
         SlideServoLeft.setDirection(Servo.Direction.REVERSE);
         RightArm.setDirection(Servo.Direction.REVERSE);
-        IntakeFlip.setDirection(Servo.Direction.REVERSE);
+       IntakeFlipLeft.setDirection(Servo.Direction.REVERSE);
+
 
 
 
@@ -142,19 +147,30 @@ public class ServoTest extends OpMode {
 
 
 if (gamepad2.left_bumper) {
-    OuttakePincher.setPosition(0.1);
-
+SlideServoLeft.setPosition(0);
+SlideServoRight.setPosition(0);
 }
 
 if (gamepad2.right_bumper) {
-  OuttakePincher.setPosition(0.5);
-        }
- if (gamepad2.left_trigger > 0.9) {
-     ClawWrist.setPosition(0);
- }
-  if (gamepad2.right_trigger > 0.9) {
-      ClawWrist.setPosition(0.67);
+  IntakePincher.setPosition(0.2);
+}
+
+if (gamepad2.left_trigger > 0.9) {
+   IntakePincher.setPosition(0.3);
+}
+
+if (gamepad2.right_trigger > 0.9) {
+   IntakePincher.setPosition(0.4);
   }
+
+if (gamepad2.a) {
+  IntakePincher.setPosition(0.5);
+}
+
+if (gamepad2.b) {
+   IntakePincher.setPosition(0.6);
+}
+
 
 
 

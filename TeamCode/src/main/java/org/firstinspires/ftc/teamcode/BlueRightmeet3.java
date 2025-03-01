@@ -24,7 +24,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 public class BlueRightmeet3 extends LinearOpMode {
 
     private IMU imu = null;
-    PidControl2 lift = new PidControl2();
+    PidControl lift = new PidControl();
     private int liftHeight, storeLiftHeight = 0;
     ElapsedTime imuTimer = new ElapsedTime();
 

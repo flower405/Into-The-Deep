@@ -68,8 +68,10 @@ public class MecanumDrive {
         public double trackWidthTicks = 11.921822162752171;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.355400335263599;
-        public double kV = 0.13567311418191833;
+     //   public double kS = 1.355400335263599;
+        public double kS = 1.705171596186685;
+     //   public double kV = 0.13567311418191833;
+     public double kV = 0.13636305804463264;
         public double kA = 0.015;
 
         // path profile parameters (in 0.0000001inches)
@@ -303,6 +305,13 @@ public class MecanumDrive {
 
                 return false;
             }
+
+
+
+
+
+
+
 
             Pose2dDual<Time> txWorldTarget = timeTrajectory.get(t);
             targetPoseWriter.write(new PoseMessage(txWorldTarget.value()));

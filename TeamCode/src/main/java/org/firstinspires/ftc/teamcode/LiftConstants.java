@@ -4,9 +4,9 @@ package org.firstinspires.ftc.teamcode;
 public class LiftConstants {
     //Lift heights in ticks
     public static int LowBucket = 800;
-    public static int HighBucket = 1750;
+    public static int HighBucket = 2200;
     public static int LowRung = 600;
-    public static int HighRung = 1000;
+    public static int HighRung = 950;
     public static int liftRetracted =0;
 
     public static int liftIdle = 140;
@@ -14,12 +14,12 @@ public class LiftConstants {
 
     public static int[] liftFlat = {1550, 1500, 1450, 1400};
 
-    public static int LiftSpickup = 250;
+    public static int LiftSpickup = 300;
 
     public static int BarAuto = 1000;
     public static int BarAuto2 = 1670;
 
-    public static int SpecimanDrop = 500;
+    public static int SpecimanDrop = 250;
     public static int SpecimanDropAuto= 450;
     public static int SpecimanDropAuto2= 750;
     public static int SpecimanDropAuto3 = 600;
@@ -30,18 +30,18 @@ public class LiftConstants {
     public static int SpecimanDropAuto4 = 550;
 
     // arm positions
-    public static double ArmIdle = 0.5;
-    public static double ArmTransfer = 0.41;
-    public static double ArmBucket = 0.9;
-    public static double ArmWall = 0.14;
-    public static double ArmRung = 0.5;
+    public static double ArmIdle = 0.4;
+    public static double ArmTransfer = 0.3;
+    public static double ArmBucket = 0.7;
+    public static double ArmWall = 0;
+    public static double ArmRung = 0.50;
 
     // elbow positions
-    public static double ElbowIdle = 0.7;
-    public static double ElbowTransfer = 0.65;
-    public static double ElbowBucket = 0;
-    public static double ElbowWall = 0.65;
-    public static double ElbowRung = 0.3;
+    public static double ElbowIdle = 0;
+    public static double ElbowTransfer = 0.1;
+    public static double ElbowBucket = 0.95;
+    public static double ElbowWall = 0;
+    public static double ElbowRung = 0.1;
 
     // wrist postion
     public static double WristIdle = 0;
@@ -55,7 +55,14 @@ public class LiftConstants {
 
     // Intake flip
     public static double IntakeDown = 0;
-    public static double IntakeUp = 0.6;
+    public static double IntakeUp = 0.55;
+
+    // Outtake Pincher
+    public static double OuttakePincherClose = 0.5;
+    public static double OuttakePincherOpen = 0.1;
+
+    public static double InttakePincherClose = 0.5;
+    public static double InttakePincherOpen = 0;
 
 
 
