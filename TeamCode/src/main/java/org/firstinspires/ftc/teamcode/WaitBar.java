@@ -21,7 +21,7 @@ private double BeginTs = -1;
         } else {
             t = Actions.now() - BeginTs;
         }
-        if (t > 3) {
+        if (t > 0.5) {
             return false;
         } else {
             return true;

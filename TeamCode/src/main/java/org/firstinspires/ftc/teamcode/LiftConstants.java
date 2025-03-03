@@ -7,6 +7,7 @@ public class LiftConstants {
     public static int HighBucket = 2200;
     public static int LowRung = 600;
     public static int HighRung = 950;
+    public static int HighRungAuto = 1050;
     public static int liftRetracted =0;
 
     public static int liftIdle = 140;
@@ -44,8 +45,8 @@ public class LiftConstants {
     public static double ElbowRung = 0.1;
 
     // wrist postion
-    public static double WristIdle = 0;
-    public static double WristSpeciman = 0.67;
+    public static double WristIdle = 0.67;
+    public static double WristSpeciman = 0;
 
     // Horizontal slide postions
     public static double HSIdle = 0;
