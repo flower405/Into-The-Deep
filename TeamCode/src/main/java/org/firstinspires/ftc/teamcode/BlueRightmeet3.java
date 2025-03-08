@@ -174,7 +174,7 @@ public class BlueRightmeet3 extends LinearOpMode {
                     break;
                 case SPECIMAN_DROP1:
                     if (liftTimer.seconds() > 0.1) {
-                        liftHeight = LiftConstants.SpecimanDropAuto;
+                        liftHeight = LiftConstants.SpecimenDropAuto;
                         ClawElbow.setPosition(0.4);
                     }
                     if (liftTimer.seconds() > 0.4) {
@@ -234,7 +234,7 @@ public class BlueRightmeet3 extends LinearOpMode {
                     break;
                 case DROP_SPECIMAN2:
                     if (liftTimer.seconds() > 0.1) {
-                        liftHeight = LiftConstants.SpecimanDropAuto;
+                        liftHeight = LiftConstants.SpecimenDropAuto;
                         ClawElbow.setPosition(0.4);
                     }
                     if (liftTimer.seconds() > 0.4) {
@@ -293,7 +293,7 @@ public class BlueRightmeet3 extends LinearOpMode {
                     break;
                 case DROP3:
                     if (liftTimer.seconds() > 0.1) {
-                        liftHeight = LiftConstants.SpecimanDropAuto;
+                        liftHeight = LiftConstants.SpecimenDropAuto;
                         ClawElbow.setPosition(0.4);
                     }
                     if (liftTimer.seconds() > 0.4) {

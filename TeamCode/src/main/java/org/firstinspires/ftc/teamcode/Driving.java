@@ -36,6 +36,9 @@ public class Driving extends OpMode {
     private DigitalChannel breakBeam = null;
     PidControl lift = new PidControl();
 
+    // Rune was here
+    // I love Rune Katchur
+
     private enum BucketState {
         IDLE,
         HORIZONTAL_EXTEND,
@@ -43,46 +46,31 @@ public class Driving extends OpMode {
         INTAKE,
         INTAKE_PINCHER_CLOSE,
         SAMPLE_YEET,
+        SAMPLE_BACK,
+        DROP_IDLE,
         HORIZONTAL_RETRACT,
         HORIZONTAL_RETRACT2,
         SAMPLE_TRANSFER,
         SAMPLE_PINCH,
         LIFT_EXTEND,
         CLAW_READY,
-        CLAW_READY_FRONT,
-
         SAMPLE_DUMP,
-        LIFT_RETRACT,
         ARM_RETRACT,
         WALL_PICKUP,
         ARM_FLIP,
         CUBE_PICKUP,
         FRONT_BACK_TRANSFER,
         BAR_HANG,
-        SPECIMAN_DROP,
+        SPECIMEN_DROP,
         SLIFT_RETRACT,
         EMERGENCY
 
     }
-
-
     BucketState bucketState = BucketState.IDLE;
     ElapsedTime BucketTimer = new ElapsedTime();
-
-    ElapsedTime SpecimanTimer = new ElapsedTime();
     int heightAdjust = 0;
-
-
     @Override
     public void init() {
-
-
-        //Declare variables for phone to recognise//
-
-
-        //names on the config
-
-
         leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back");
@@ -111,13 +99,10 @@ public class Driving extends OpMode {
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
         telemetry.addData("status", "Initialized");
 
         lift.initTele(hardwareMap);
-      //  lift.Idle();
-        OuttakePincher.setPosition(0.1);
-      //  lift.HSRetract();
+        lift.OuttakePincherOpen();
         IntakePincher.setPosition(0);
         liftHeight = LiftConstants.liftRetracted;
 
@@ -175,11 +160,11 @@ public class Driving extends OpMode {
             case IDLE:  // start positions
                 lift.Idle();
                 OuttakePincher.setPosition(0.1);
-                IntakePincher.setPosition(LiftConstants.InttakePincherOpen); // find this postion
+                IntakePincher.setPosition(LiftConstants.InttakePincherOpen);
                 liftHeight = LiftConstants.liftRetracted;
                 bucketState = BucketState.HORIZONTAL_EXTEND;
                 break;
-            case HORIZONTAL_EXTEND: // extending horiztonal lifts and flipping intake out
+            case HORIZONTAL_EXTEND: // extending horizontal lifts and flipping intake out
                 if (gamepad1.left_bumper) {
                     lift.HSLow();
                     bucketState = BucketState.INTAKE;
@@ -211,10 +196,10 @@ public class Driving extends OpMode {
                 break;
             case INTAKE_PINCHER_CLOSE:
                 if (gamepad1.a) {
-                   lift.IntakeDown(); // position
+                   lift.IntakeDown();
                 }
                 if (gamepad1.b) {
-                    lift.IntakeUp(); // positon
+                    lift.IntakeUp();
                 }
                 if (gamepad2.b) {
                     spinny1.setPower(1);
@@ -227,10 +212,6 @@ public class Driving extends OpMode {
                     IntakePincher.setPosition(LiftConstants.OuttakePincherClose); // close position
                     BucketTimer.reset();
                     bucketState = BucketState.HORIZONTAL_RETRACT;
-                }
-                if (gamepad2.left_trigger > 0.9) {
-                    IntakeFlip.setPosition(LiftConstants.InttakePincherClose);
-                    bucketState = BucketState.SAMPLE_YEET;
                 }
                 if (gamepad1.left_bumper) {
                    lift.HSLow();
@@ -290,8 +271,9 @@ public class Driving extends OpMode {
                     BucketTimer.reset();
 
                 }
-                if (gamepad2.right_bumper) {
+                if (gamepad2.left_trigger > 0.9) {
                     bucketState = BucketState.SAMPLE_YEET;
+                    BucketTimer.reset();
                 }
                 if (gamepad1.left_bumper) { // so that you can go back to extending the horizontal slides
                     lift.HSLow();
@@ -350,52 +332,78 @@ public class Driving extends OpMode {
                     bucketState = BucketState.HORIZONTAL_EXTEND;
                 }
                 break;
+            case SAMPLE_BACK:
+                if (BucketTimer.seconds() > 0) {
+                    liftHeight = LiftConstants.LiftSpickup;
+                }
+                if (BucketTimer.seconds() > 0.6) {
+                    lift.WallPickup();
+                    bucketState = BucketState.SAMPLE_YEET;
+                    BucketTimer.reset();
+                }
+            case SAMPLE_YEET:
+                if (gamepad2.dpad_left) {
+                    lift.OuttakePincherOpen();
+                    bucketState = BucketState.WALL_PICKUP;
+                    BucketTimer.reset();
+                }
+                if (gamepad2.dpad_up) {
+                    bucketState = BucketState.DROP_IDLE;
+                    BucketTimer.reset();
+                }
+            case DROP_IDLE:
+                if (BucketTimer.seconds() > 0) {
+                    lift.OuttakePincherOpen();
+                }
+                if (BucketTimer.seconds() > 0.3) {
+                    lift.Idle();
+                }
+                if (BucketTimer.seconds() > 0.6) {
+                    liftHeight = LiftConstants.liftRetracted;
+                    bucketState = BucketState.IDLE;
+                    BucketTimer.reset();
+                }
             case WALL_PICKUP:
                 if (gamepad2.dpad_left) {
                     liftHeight = LiftConstants.LiftSpickup;
                     bucketState = BucketState.ARM_FLIP;
-                    SpecimanTimer.reset();
+                    BucketTimer.reset();
                 }
                 break;
             case ARM_FLIP:
-                if (SpecimanTimer.seconds() > 0.6) {
+                if (BucketTimer.seconds() > 0.6) {
                     lift.WallPickup();
                     OuttakePincher.setPosition(0.1);
-                    SpecimanTimer.reset();
+                    BucketTimer.reset();
                     bucketState = BucketState.CUBE_PICKUP;
                 }
                 break;
             case CUBE_PICKUP: // pickup cube and swing arm around
                 if (gamepad2.a) {
                     OuttakePincher.setPosition(0.5);
-                    SpecimanTimer.reset();
+                   BucketTimer.reset();
                     bucketState = BucketState.FRONT_BACK_TRANSFER;
                 }
                 break;
             case FRONT_BACK_TRANSFER:
-                if (SpecimanTimer.seconds() > 0.6) {
+                if (BucketTimer.seconds() > 0.6) {
                     liftHeight = LiftConstants.HighRung;
                 }
-                if (SpecimanTimer.seconds() > 0.9) {
+                if (BucketTimer.seconds() > 0.9) {
                     lift.SpecimanDrop();
-                    SpecimanTimer.reset();
+                    BucketTimer.reset();
                     bucketState = BucketState.BAR_HANG;
                 }
                 break;
             case BAR_HANG:
                 if (gamepad2.y) {
-                    bucketState = BucketState.SPECIMAN_DROP;
+                    bucketState = BucketState.SPECIMEN_DROP;
                     BucketTimer.reset();
                 }
                 break;
-            case SPECIMAN_DROP: // dropping the cube off
-//                if (gamepad2.y) {
-//                    OuttakePincher.setPosition(0.1);
-//                    bucketState = BucketState.SLIFT_RETRACT;
-//                    SpecimanTimer.reset();
-//                }
+            case SPECIMEN_DROP: // dropping the cube off
                 if (BucketTimer.seconds() > 0.1) {
-                    liftHeight = LiftConstants.SpecimanDrop;
+                    liftHeight = LiftConstants.SpecimenDrop;
                 }
                 if (BucketTimer.seconds() > 0.4) {
                     OuttakePincher.setPosition(LiftConstants.OuttakePincherOpen);

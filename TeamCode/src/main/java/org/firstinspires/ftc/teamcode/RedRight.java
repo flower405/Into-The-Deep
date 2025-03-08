@@ -199,11 +199,11 @@ public class RedRight extends LinearOpMode {
                     ClawRotate.setPosition(0.6);
                 }
                 if (liftTimer.seconds() > 1.2) {
-                    liftHeight = LiftConstants.SpecimanDropAuto;
+                    liftHeight = LiftConstants.SpecimenDropAuto;
                 } if (liftTimer.seconds() > 1.5) {
-                liftHeight = LiftConstants.SpecimanDropAuto2;
+                liftHeight = LiftConstants.SpecimenDropAuto2;
             } if (liftTimer.seconds() > 1.8) {
-                liftHeight = LiftConstants.SpecimanDropAuto3;
+                liftHeight = LiftConstants.SpecimenDropAuto3;
             //    } if (liftTimer.seconds() > 1.4) {
                // liftHeight = LiftConstants.SpecimanDropAuto4;
             }
@@ -308,10 +308,10 @@ public class RedRight extends LinearOpMode {
                //     ClawRotate.setPosition(0.6);
               //  }
                 if (liftTimer.seconds() > 0.5) {
-                    liftHeight = LiftConstants.SpecimanDropAuto;
+                    liftHeight = LiftConstants.SpecimenDropAuto;
                 }
                 if (liftTimer.seconds() > 0.8) {
-                liftHeight = LiftConstants.SpecimanDropAuto2;
+                liftHeight = LiftConstants.SpecimenDropAuto2;
             }
                 //if (liftTimer.seconds() > 1.1) {
               //  liftHeight = LiftConstants.SpecimanDropAuto3;

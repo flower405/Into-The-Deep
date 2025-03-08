@@ -188,11 +188,9 @@ public class PidControl {
         ClawElbow.setPosition(LiftConstants.ElbowBucket);
         ClawWrist.setPosition(LiftConstants.WristIdle);
     }
-
     public void OuttakePincherClose() {
         OuttakePincher.setPosition(LiftConstants.OuttakePincherClose);
     }
-
     public void OuttakePincherOpen() {
        OuttakePincher.setPosition(LiftConstants.OuttakePincherOpen);
     }

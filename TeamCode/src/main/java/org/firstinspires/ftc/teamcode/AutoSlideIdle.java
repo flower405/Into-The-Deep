@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.LiftConstants.SpecimanDropAuto;
+import static org.firstinspires.ftc.teamcode.LiftConstants.SpecimenDropAuto;
 import static org.firstinspires.ftc.teamcode.LiftConstants.liftRetracted;
 
 import androidx.annotation.NonNull;

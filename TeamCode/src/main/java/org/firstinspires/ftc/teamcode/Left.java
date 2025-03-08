@@ -32,14 +32,8 @@ public class Left extends LinearOpMode {
     PidControl lift = new PidControl();
     private int liftHeight, storeLiftHeight = 0;
     ElapsedTime imuTimer = new ElapsedTime();
-
-
     ElapsedTime liftTimer = new ElapsedTime();
-    LiftState liftState = LiftState.SAMPLE1;
-
-
-
-
+   // LiftState liftState = LiftState.SAMPLE1;
     private Servo LeftArm, RightArm, ClawRotate, OuttakePincher, ClawElbow, ClawWrist, SlideServoLeft, SlideServoRight, IntakeFlip, IntakePincher = null;
     private DcMotor leftLift = null;
     private CRServo spinny1 = null;
@@ -47,16 +41,6 @@ public class Left extends LinearOpMode {
     private boolean ReadyToClose = false;
     private boolean ReadyToDrop = false;
     private int liftOffset = 0;
-
-
-    private enum LiftState {
-        SAMPLE1,
-        DROP_SAMPLE1,
-        PICKUP_SAMPLE2,
-        EXTEND_SAMPLE2,
-        DONE
-
-    }
 
 
     @Override
@@ -75,6 +59,25 @@ public class Left extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-48, -39), Math.toRadians(90));
 
         Action TrajectoryActionPickupSample2 = PickupSample2.build();
+
+        TrajectoryActionBuilder Sample2 = PickupSample2.endTrajectory().fresh()
+                ;
+
+        Action TrajectoryActionSample2 = Sample2.build();
+
+        TrajectoryActionBuilder PickupSample3 = Sample2.endTrajectory().fresh()
+                ;
+
+        Action TrajectoryActionPickupSample3 = PickupSample3.build();
+
+        TrajectoryActionBuilder Sample3 = PickupSample3.endTrajectory().fresh()
+                ;
+
+        Action TrajectoryActionSample3 = Sample3.build();
+
+        TrajectoryActionBuilder PickupSample4 = Sample3.endTrajectory().fresh()
+                ;
+        Action TrajectoryActionPickupSample4 = PickupSample4.build();
 
 
 
@@ -115,64 +118,63 @@ public class Left extends LinearOpMode {
         if (isStopRequested()) return;
         telemetry.addData("Position", leftLift.getCurrentPosition());
         telemetry.addData("liftHeight", liftHeight);
-        telemetry.addData("lift State", liftState);
+     //   telemetry.addData("lift State", liftState);
         telemetry.update();
 
 
-        while (liftState != LiftState.DONE) {
-            switch (liftState) {
-                case SAMPLE1:
-                    Actions.runBlocking(
-                            new SequentialAction(
-                                    TrajectoryActionSample1
-                            )
-                    );
-                    liftTimer.reset();
-                    liftState = LiftState.DROP_SAMPLE1;
-                    break;
-                case DROP_SAMPLE1:
-                    if (liftTimer.seconds() > 0) {
-                        SlideServoLeft.setPosition(0);
-                        SlideServoRight.setPosition(0);
-                        liftHeight = LiftConstants.HighBucket;
-                    }
-                    if (liftTimer.seconds() > 0.6) {
-                        RightArm.setPosition(0.9);
-                        LeftArm.setPosition(0.9);
-                        ClawWrist.setPosition(0);
-                        ClawElbow.setPosition(0);
-                    }
-                    if (liftTimer.seconds() > 1.3) {
-                        OuttakePincher.setPosition(0.1);
-                    }
-                    if (liftTimer.seconds() > 1.7) {
-                        LeftArm.setPosition(0.5);
-                        RightArm.setPosition(0.5);
-                        ClawElbow.setPosition(0.7);
-                    }
-                    if (liftTimer.seconds() > 2) {
-                        liftHeight = LiftConstants.liftRetracted;
-                    }
-                    if (liftTimer.seconds() > 2.4) {
-                        IntakeFlip.setPosition(0);
-                        spinny1.setPower(1);
-
-                    }
-                    break;
-                case PICKUP_SAMPLE2:
-                   if (liftTimer.seconds() > 0.5)
-                    Actions.runBlocking(
-                            new SequentialAction(
-                                    TrajectoryActionPickupSample2
-                            )
-                    );
-                    liftTimer.reset();
-                    liftState = LiftState.DONE;
-                    break;
-            }
-            lift.setHeight(liftHeight);
-
+//        while (liftState != LiftState.DONE) {
+//            switch (liftState) {
+//                case SAMPLE1:
+//                    Actions.runBlocking(
+//                            new SequentialAction(
+//                                    TrajectoryActionSample1
+//                            )
+//                    );
+//                    liftTimer.reset();
+//                    liftState = LiftState.DROP_SAMPLE1;
+//                    break;
+//                case DROP_SAMPLE1:
+//                    if (liftTimer.seconds() > 0) {
+//                        SlideServoLeft.setPosition(0);
+//                        SlideServoRight.setPosition(0);
+//                        liftHeight = LiftConstants.HighBucket;
+//                    }
+//                    if (liftTimer.seconds() > 0.6) {
+//                        RightArm.setPosition(0.9);
+//                        LeftArm.setPosition(0.9);
+//                        ClawWrist.setPosition(0);
+//                        ClawElbow.setPosition(0);
+//                    }
+//                    if (liftTimer.seconds() > 1.3) {
+//                        OuttakePincher.setPosition(0.1);
+//                    }
+//                    if (liftTimer.seconds() > 1.7) {
+//                        LeftArm.setPosition(0.5);
+//                        RightArm.setPosition(0.5);
+//                        ClawElbow.setPosition(0.7);
+//                    }
+//                    if (liftTimer.seconds() > 2) {
+//                        liftHeight = LiftConstants.liftRetracted;
+//                    }
+//                    if (liftTimer.seconds() > 2.4) {
+//                        IntakeFlip.setPosition(0);
+//                        spinny1.setPower(1);
+//
+//                    }
+//                    break;
+//                case PICKUP_SAMPLE2:
+//                   if (liftTimer.seconds() > 0.5)
+//                    Actions.runBlocking(
+//                            new SequentialAction(
+//                                    TrajectoryActionPickupSample2
+//                            )
+//                    );
+//                    liftTimer.reset();
+//                    liftState = LiftState.DONE;
+//                    break;
+//            }
+//            lift.setHeight(liftHeight);
+//
         }
-    }
-
-}
+  }
+//

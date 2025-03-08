@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.LiftConstants.SpecimanDropAuto;
+import static org.firstinspires.ftc.teamcode.LiftConstants.SpecimenDropAuto;
 
 import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -24,7 +24,7 @@ public class AutoSlideWall implements Action {
           lift.WallPickup();
         }
         if (t > 2) {
-            liftHeight = SpecimanDropAuto;
+            liftHeight = SpecimenDropAuto;
         }
         if (t > 3){
             return false;

@@ -469,7 +469,7 @@ public class Driving3 extends OpMode {
 //                    SpecimanTimer.reset();
 //                }
                 if (BucketTimer.seconds() > 0.1) {
-                    liftHeight = LiftConstants.SpecimanDrop;
+                    liftHeight = LiftConstants.SpecimenDrop;
                     ClawElbow.setPosition(0.3);
                 }
                 if (BucketTimer.seconds() > 0.4) {
