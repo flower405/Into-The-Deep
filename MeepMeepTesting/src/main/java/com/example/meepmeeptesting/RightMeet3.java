@@ -16,10 +16,10 @@ public class RightMeet3 {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(10, -60, Math.toRadians(90)))
-                .splineToConstantHeading(new Vector2d(0, -32), Math.toRadians(90))  // place first speciman
-                .lineToY(-36)
-                .splineToConstantHeading(new Vector2d(36, -34), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(40, -16), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(35, -40, Math.toRadians(90)), Math.toRadians(90)) // push first sample
+                .splineToLinearHeading(new Pose2d(35, -20, Math.toRadians(90)), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(46, -15, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(49, -16, Math.toRadians(90)), Math.toRadians(-90))
 
 
 
