@@ -147,28 +147,27 @@ public class ServoTest extends OpMode {
 
 
 if (gamepad2.left_bumper) {
-SlideServoLeft.setPosition(0);
-SlideServoRight.setPosition(0);
+IntakePincher.setPosition(0);
 }
 
 if (gamepad2.right_bumper) {
-  IntakePincher.setPosition(0.2);
+IntakePincher.setPosition(0.5);
 }
 
 if (gamepad2.left_trigger > 0.9) {
-   IntakePincher.setPosition(0.3);
+IntakePincher.setPosition(0.7);
 }
 
 if (gamepad2.right_trigger > 0.9) {
-   IntakePincher.setPosition(0.4);
+
   }
 
 if (gamepad2.a) {
-  IntakePincher.setPosition(0.5);
+
 }
 
 if (gamepad2.b) {
-   IntakePincher.setPosition(0.6);
+
 }
 
 

@@ -189,18 +189,21 @@ public class Right0 extends LinearOpMode {
 
         TrajectoryActionBuilder Sample1 = drive.actionBuilder(initialPose)
                 .splineToLinearHeading(new Pose2d(30, -45, Math.toRadians(90)), Math.toRadians(0)) // push first sample
-                .splineToLinearHeading(new Pose2d(36, -40, Math.toRadians(90)), Math.toRadians(90)) // push first sample
-                .splineToLinearHeading(new Pose2d(36, -16, Math.toRadians(90)), Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(44, -15, Math.toRadians(90)), Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(47, -16, Math.toRadians(90)), Math.toRadians(-90))
+                .splineToLinearHeading(new Pose2d(37, -40, Math.toRadians(90)), Math.toRadians(90)) // push first sample
+                .splineToLinearHeading(new Pose2d(37, -16, Math.toRadians(90)), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(45, -15, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(48, -16, Math.toRadians(90)), Math.toRadians(-90))
                 .lineToY(-45);
 
         Action TrajectoryActionSample1 = Sample1.build();
 
         TrajectoryActionBuilder Sample2 = Sample1.endTrajectory().fresh()
-                .splineToLinearHeading(new Pose2d(47, -20, Math.toRadians(90)), Math.toRadians(90)) // push second sample
-                .splineToLinearHeading(new Pose2d(64, -15, Math.toRadians(90)), Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(66.5, -16, Math.toRadians(90)), Math.toRadians(270))
+//                .splineToLinearHeading(new Pose2d(47, -20, Math.toRadians(90)), Math.toRadians(90)) // push second sample
+//                .splineToLinearHeading(new Pose2d(64, -15, Math.toRadians(90)), Math.toRadians(0))
+//                .splineToLinearHeading(new Pose2d(66.5, -16, Math.toRadians(90)), Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(47, -25, Math.toRadians(90)), Math.toRadians(90)) // push second sample
+                .splineToLinearHeading(new Pose2d(64, -20, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(66.5, -11, Math.toRadians(90)), Math.toRadians(270))
                 .lineToY(-45)
                 .strafeToConstantHeading(new Vector2d(61, -60));
 
@@ -224,7 +227,7 @@ public class Right0 extends LinearOpMode {
         TrajectoryActionBuilder Specimen1 = Sample2.endTrajectory().fresh() // place first specimen
                 .splineToConstantHeading(new Vector2d(20, -40), Math.toRadians(180),
                          new TranslationalVelConstraint(80))
-                .splineToConstantHeading(new Vector2d(6, -30), Math.toRadians(90),
+                .splineToConstantHeading(new Vector2d(3, -27), Math.toRadians(90),
                         new TranslationalVelConstraint(80));
 
         Action TrajectoryActionSpecimen1 = Specimen1.build();
@@ -242,9 +245,10 @@ public class Right0 extends LinearOpMode {
         Action TrajectoryActionSpecimen2Pickup = Specimen2Pickup.build();
 
         TrajectoryActionBuilder Specimen2 = Specimen2Pickup.endTrajectory().fresh() // placing specimen 2
-                .strafeToConstantHeading(new Vector2d(5, -27),
-                        new TranslationalVelConstraint(80)
-                        );
+                .splineToConstantHeading(new Vector2d(0, -30), Math.toRadians(90));
+//                .strafeToConstantHeading(new Vector2d(4, -27),
+//                        new TranslationalVelConstraint(80)
+//                        );
 
 //
 
@@ -261,8 +265,9 @@ public class Right0 extends LinearOpMode {
         Action TrajectoryActionSpecimen3Pickup = Specimen3Pickup.build();
 
         TrajectoryActionBuilder Specimen3 = Specimen3Pickup.endTrajectory().fresh() // placing third specimen
-                .strafeToConstantHeading(new Vector2d(6, -27),
-                        new TranslationalVelConstraint(80));
+                .splineToConstantHeading(new Vector2d(0, -30), Math.toRadians(90));
+//                .strafeToConstantHeading(new Vector2d(5, -27),
+//                        new TranslationalVelConstraint(80));
 
 //
 
@@ -271,15 +276,18 @@ public class Right0 extends LinearOpMode {
         TrajectoryActionBuilder Specimen4Pickup = Specimen3.endTrajectory().fresh() // picking up fourth specimen
                 .splineToConstantHeading(new Vector2d(26, -45), Math.toRadians(0),
                         new TranslationalVelConstraint(80))
-                .splineToConstantHeading(new Vector2d(40, -59), Math.toRadians(270),
+                .splineToConstantHeading(new Vector2d(40, -59.5), Math.toRadians(270),
                         new TranslationalVelConstraint(80));
 
 
         Action TrajectoryActionSpecimen4Pickup = Specimen4Pickup.build();
 
         TrajectoryActionBuilder Specimen4 = Specimen4Pickup.endTrajectory().fresh() // placing fourth specimen
-                .strafeToConstantHeading(new Vector2d(5, -27),
-                        new TranslationalVelConstraint(80));
+                .splineToConstantHeading(new Vector2d(0, -30), Math.toRadians(90));
+
+
+//                .strafeToConstantHeading(new Vector2d(6, -27),
+//                        new TranslationalVelConstraint(80));
 
 
         Action TrajectoryActionSpecimen4 = Specimen4.build();
@@ -294,7 +302,7 @@ public class Right0 extends LinearOpMode {
         Action TrajectoryActionSpecimen5Pickup = Specimen5Pickup.build();
 
         TrajectoryActionBuilder Specimen5 = Specimen5Pickup.endTrajectory().fresh() // placing fifth specimen
-                .strafeToConstantHeading(new Vector2d(5, -30));
+                .strafeToConstantHeading(new Vector2d(7, -30));
 
         Action TrajectoryActionSpecimen5 = Specimen5.build();
 
@@ -346,7 +354,7 @@ public class Right0 extends LinearOpMode {
                                new InstantAction(() -> lift.SpecimanDrop())
                            ),
                            new InstantAction(() -> liftHeight = SpecimenDrop),
-                           new SleepAction(0.1),
+                           new SleepAction(0.15),
                            new InstantAction(() -> lift.OuttakePincherOpen()),
                            new ParallelAction( // wall 2
                                    TrajectoryActionSpecimen2Pickup,
@@ -395,7 +403,10 @@ public class Right0 extends LinearOpMode {
                            ),
                                new InstantAction(() -> liftHeight = SpecimenDrop), // drop 4
                                new SleepAction(0.15),
-                               new InstantAction(() -> lift.OuttakePincherOpen())
+                               new InstantAction(() -> lift.OuttakePincherOpen()),
+                               new InstantAction(() -> liftHeight = liftRetracted),
+                               new InstantAction(() -> lift.Idle())
+
 
                        ) // sequential loop for robots sequence
 

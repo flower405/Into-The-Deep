@@ -25,6 +25,7 @@ public class PidControl {
     private Servo ClawWrist = null;
     private Servo ClawElbow = null;
     private Servo OuttakePincher = null;
+    private Servo IntakePincher = null;
 
 
     double integralSum = 0;
@@ -70,6 +71,7 @@ public class PidControl {
         ClawWrist = hardwareMap.get(Servo.class, "Claw_Wrist");
         ClawElbow = hardwareMap.get(Servo.class, "Claw_Elbow");
         OuttakePincher = hardwareMap.get(Servo.class, "Outtake_Pincher");
+        IntakePincher = hardwareMap.get(Servo.class, "IntakePincher");
 
 
         leftLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -195,6 +197,17 @@ public class PidControl {
        OuttakePincher.setPosition(LiftConstants.OuttakePincherOpen);
     }
 
+    public void IntakePincherOpen() {
+        IntakePincher.setPosition(LiftConstants.InttakePincherOpen);
+    }
+
+    public void IntakePincherClose() {
+        IntakePincher.setPosition(LiftConstants.InttakePincherClose);
+    }
+
+    public void IntakePincherOpenAuto() {
+        IntakePincher.setPosition(LiftConstants.IntakePincherOpenAuto);
+    }
 
     //Rotates the wrist counter-clockwise to the next wrist position
 

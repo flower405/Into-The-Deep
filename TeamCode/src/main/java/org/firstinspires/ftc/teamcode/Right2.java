@@ -11,6 +11,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -23,6 +24,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
 // drops 2 specimen before pushing samples
+@Disabled
 @Autonomous
 public class Right2 extends LinearOpMode {
     private IMU imu = null;
@@ -166,6 +168,7 @@ public class Right2 extends LinearOpMode {
     private boolean ReadyToClose = false;
     private boolean ReadyToDrop = false;
     private int liftOffset = 0;
+
 
 
     @Override

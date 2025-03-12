@@ -25,7 +25,7 @@ public class Driving extends OpMode {
     private DcMotor rightBackDrive = null;
     private DcMotor leftLift = null;
     private CRServo spinny1 = null;
-    private Servo IntakePincher = null;
+
     private Servo IntakeFlip = null;
     private Servo OuttakePincher = null;
     private int liftOffset = 0;
@@ -78,7 +78,6 @@ public class Driving extends OpMode {
         leftLift = hardwareMap.get(DcMotorEx.class, "left_lift");
 
         spinny1 = hardwareMap.get(CRServo.class, "spinny1");
-        IntakePincher = hardwareMap.get(Servo.class, "IntakePincher");
         OuttakePincher = hardwareMap.get(Servo.class, "Outtake_Pincher");
         breakBeam = hardwareMap.get(DigitalChannel.class, "break_beam");
 
@@ -103,7 +102,7 @@ public class Driving extends OpMode {
 
         lift.initTele(hardwareMap);
         lift.OuttakePincherOpen();
-        IntakePincher.setPosition(0);
+       lift.IntakePincherOpen();
         liftHeight = LiftConstants.liftRetracted;
 
 
@@ -160,7 +159,7 @@ public class Driving extends OpMode {
             case IDLE:  // start positions
                 lift.Idle();
                 OuttakePincher.setPosition(0.1);
-                IntakePincher.setPosition(LiftConstants.InttakePincherOpen);
+               lift.IntakePincherOpen();
                 liftHeight = LiftConstants.liftRetracted;
                 bucketState = BucketState.HORIZONTAL_EXTEND;
                 break;
@@ -209,7 +208,7 @@ public class Driving extends OpMode {
                 }
                 if (gamepad2.right_trigger > 0.9) {
                     spinny1.setPower(0);
-                    IntakePincher.setPosition(LiftConstants.OuttakePincherClose); // close position
+                    lift.IntakePincherClose(); // close position
                     BucketTimer.reset();
                     bucketState = BucketState.HORIZONTAL_RETRACT;
                 }
@@ -249,7 +248,7 @@ public class Driving extends OpMode {
             case SAMPLE_TRANSFER: // arm goes from idle to pick up cube and go back to idle
                 if (BucketTimer.seconds()> 0.4) {
                     lift.ElbowTransfer();
-                    IntakePincher.setPosition(LiftConstants.InttakePincherOpen);// open claw
+                   lift.IntakePincherOpen(); // open claw
                 }
                 if (BucketTimer.seconds() > 0.6) {
                     lift.ArmTransfer();

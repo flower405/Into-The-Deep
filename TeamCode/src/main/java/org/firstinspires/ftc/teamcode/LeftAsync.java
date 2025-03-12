@@ -8,6 +8,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -46,71 +47,178 @@ public class LeftAsync extends LinearOpMode {
     public int liftHeight, storeLiftHeight = 0;
     ElapsedTime imuTimer = new ElapsedTime();
     ElapsedTime liftTimer = new ElapsedTime();
-    private Servo LeftArm, RightArm, ClawRotate, OuttakePincher, ClawElbow, ClawWrist, SlideServoLeft, SlideServoRight = null;
-    private DcMotor leftLift = null;
+
     private CRServo spinny1 = null;
     private boolean ReadyToClose = false;
     private boolean ReadyToDrop = false;
     private int liftOffset = 0;
 
+    public class SampleDrop implements Action {
+        private double BeginTs = -1;
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            double t;
+            if (BeginTs < 0) {
+                BeginTs = com.acmerobotics.roadrunner.Actions.now();
+                t = 0;
+            } else {
+                t = com.acmerobotics.roadrunner.Actions.now() - BeginTs;
+            }
+            if (t > 0.3) {
+                lift.OuttakePincherOpen();
+            }
+            if (t > 0.6) {
+                liftHeight = liftRetracted;
+                lift.Idle();
+            }
+            if (t > 0.9) {
+                lift.IntakeDown();
+                spinny1.setPower(1);
+            }
+            if (t > 1.1){
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    public class AutoBucketToSample implements Action {
+        private double BeginTs = -1;
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            double t;
+            if (BeginTs < 0) {
+                BeginTs = com.acmerobotics.roadrunner.Actions.now();
+                t = 0;
+            } else {
+                t = com.acmerobotics.roadrunner.Actions.now() - BeginTs;
+            }
+            if (t > 0.5) {
+                lift.ArmRetract();
+            }
+            if (t > 1) {
+                liftHeight = liftRetracted;
+            }
+            if (t > 1.5) {
+                lift.IntakeDown();
+            }
+            if (t > 1.7){
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    public class SamplePickup implements Action {
+        private double BeginTs = -1;
+
+        public int liftHeight, storeLiftHeight = 0;
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            double t;
+            if (BeginTs < 0) {
+                BeginTs = com.acmerobotics.roadrunner.Actions.now();
+                t = 0;
+            } else {
+                t = com.acmerobotics.roadrunner.Actions.now() - BeginTs;
+            }
+
+            if (t > 0.5) {
+                lift.IntakePincherClose();
+            }
+            if (t > 0.6) {
+                lift.IntakeUp();
+                spinny1.setPower(0);
+            }
+            if (t > 0.9) {
+                lift.ArmTransfer();
+            }
+            if ( t > 1.2) {
+                lift.IntakePincherOpenAuto();
+            }
+            if (t > 1.3) {
+                lift.OuttakePincherClose();
+            }
+            if (t > 1.6){
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    public class BucketIdle implements Action {
+        private double BeginTs = -1;
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            double t;
+            if (BeginTs < 0) {
+                BeginTs = com.acmerobotics.roadrunner.Actions.now();
+                t = 0;
+            } else {
+                t = com.acmerobotics.roadrunner.Actions.now() - BeginTs;
+            }
+            if (t > 0.3) {
+                lift.OuttakePincherOpen();
+            }
+            if (t > 0.6) {
+                liftHeight = liftRetracted;
+                lift.Idle();
+            }
+            if (t > 0.9){
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d initialPose = new Pose2d(10, -68, Math.toRadians(90));
+        Pose2d initialPose = new Pose2d(-34, -60, Math.toRadians(90));
         SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, initialPose);
         //Define robots starting position and orientation
 
 
-        TrajectoryActionBuilder Bucket1 = drive.actionBuilder(initialPose) // place first speciman
-                .splineToConstantHeading(new Vector2d(0, -40), Math.toRadians(90))
-                //   .afterTime(0, new InstantAction(() -> liftHeight = HighRung));
-                .afterTime(0, new InstantAction(() -> lift.SpecimanDrop()));
+        TrajectoryActionBuilder Bucket1 = drive.actionBuilder(initialPose) // bucket 1
+                .strafeToLinearHeading(new Vector2d(-54,-53), Math.toRadians(45));
 
         Action TrajectoryActionBucket1 = Bucket1.build();
 
-        TrajectoryActionBuilder Sample2Pickup = Bucket1.endTrajectory().fresh() // push samples and Pickup Speciman 2
-                .splineToConstantHeading(new Vector2d(0,-43), Math.toRadians(0))
-                .afterTime(0, new InstantAction(() -> lift.WallPickup()))
-                .splineToConstantHeading(new Vector2d(32, -43), Math.toRadians(0))
-                .splineToSplineHeading(new Pose2d(35, -34, Math.toRadians(60)), Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(36,-50, Math.toRadians(340)), Math.toRadians(100))
-                .splineToSplineHeading(new Pose2d(46,-34, Math.toRadians(60)), Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(46,-50, Math.toRadians(340)), Math.toRadians(100))
-                .splineToSplineHeading(new Pose2d(56, -34, Math.toRadians(60)), Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(54,-50, Math.toRadians(340)), Math.toRadians(100))
-                .strafeToLinearHeading(new Vector2d(45,-37), Math.toRadians(90))
-                .strafeToConstantHeading(new Vector2d(40, -58));
+        TrajectoryActionBuilder Sample2Pickup = Bucket1.endTrajectory().fresh() // pickup 2
+                .strafeToLinearHeading(new Vector2d(-44, -38), Math.toRadians(90));
 
         Action TrajectoryActionSample2Pickup = Sample2Pickup.build();
 
-        TrajectoryActionBuilder Bucket2 = Sample2Pickup.endTrajectory().fresh() // placing speicman 2
-                .strafeToConstantHeading(new Vector2d(3,-32));
+        TrajectoryActionBuilder Bucket2 = Sample2Pickup.endTrajectory().fresh() // bucket 2
+                .strafeToLinearHeading(new Vector2d(-54,-50), Math.toRadians(45));
 
         Action TrajectoryActionBucket2 = Bucket2.build();
 
-        TrajectoryActionBuilder Sample3Pickup = Bucket2.endTrajectory().fresh() // going to pickup third speciman
-                .splineToConstantHeading(new Vector2d(40,-50), Math.toRadians(0))
-                .strafeTo(new Vector2d(40,-58));
+        TrajectoryActionBuilder Sample3Pickup = Bucket2.endTrajectory().fresh()  // pickup 3
+                .strafeToLinearHeading(new Vector2d(-54,-36), Math.toRadians(90));
 
         Action TrajectoryActionSample3Pickup = Sample3Pickup.build();
 
-        TrajectoryActionBuilder Bucket3 = Sample3Pickup.endTrajectory().fresh() // placing third speciman
-                .strafeToConstantHeading(new Vector2d(3,-32));
+        TrajectoryActionBuilder Bucket3 = Sample3Pickup.endTrajectory().fresh() // bucket 3
+                .strafeToLinearHeading(new Vector2d(-52,-52), Math.toRadians(45));
 
         Action TrajectoryActionBucket3 = Bucket3.build();
 
-        TrajectoryActionBuilder Sample4Pickup = Bucket3.endTrajectory().fresh() // picking up fourth speciman
-                .splineToConstantHeading(new Vector2d(40,-50), Math.toRadians(0))
-                .strafeTo(new Vector2d(40,-58));
+        TrajectoryActionBuilder Sample4Pickup = Bucket3.endTrajectory().fresh() // pickup 4
+                .strafeToLinearHeading(new Vector2d(-51,-33), Math.toRadians(145));
 
         Action TrajectoryActionSample4Pickup = Sample4Pickup.build();
 
-        TrajectoryActionBuilder Bucket4 = Sample4Pickup.endTrajectory().fresh() // placing fourth speciman
-                .strafeToConstantHeading(new Vector2d(3,-32));
+        TrajectoryActionBuilder Bucket4 = Sample4Pickup.endTrajectory().fresh()  // drop 4
+                .strafeToLinearHeading(new Vector2d(-52,-52), Math.toRadians(45));
 
         Action TrajectoryActionBucket4 = Bucket4.build();
 
-        TrajectoryActionBuilder Park = Bucket4.endTrajectory().fresh() // picking up the fifth speciman
+        TrajectoryActionBuilder Park = Bucket4.endTrajectory().fresh()
                 .splineToConstantHeading(new Vector2d(40,-50), Math.toRadians(0))
                 .strafeTo(new Vector2d(40,-58));
 
@@ -119,24 +227,15 @@ public class LeftAsync extends LinearOpMode {
 
 
         // lift init
-        leftLift = hardwareMap.get(DcMotorEx.class, "left_lift");
-        LeftArm = hardwareMap.get(Servo.class, "Left_Arm");
-        RightArm = hardwareMap.get(Servo.class, "Right_Arm");
+
         spinny1 = hardwareMap.get(CRServo.class, "spinny1");
-        OuttakePincher = hardwareMap.get(Servo.class, "Outtake_Pincher");
-        ClawWrist = hardwareMap.get(Servo.class, "Claw_Wrist");
-        ClawElbow = hardwareMap.get(Servo.class, "Claw_Elbow");
-        SlideServoLeft = hardwareMap.get(Servo.class, "SlideServoLeft");
-        SlideServoRight = hardwareMap.get(Servo.class, "SlideServoRight");
-
-        RightArm.setDirection(Servo.Direction.REVERSE);
-        SlideServoLeft.setDirection(Servo.Direction.REVERSE);
 
 
 
-        lift.initAuto(hardwareMap);
-        SlideServoLeft.setPosition(0);
-        SlideServoRight.setPosition(0);
+
+
+        lift.initTele(hardwareMap);
+       lift.HSRetract();
 
         imu = hardwareMap.get(IMU.class, "imu");
         RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.UP);
@@ -149,9 +248,9 @@ public class LeftAsync extends LinearOpMode {
 
         waitForStart();
         if (isStopRequested()) return;
-        telemetry.addData("Position", leftLift.getCurrentPosition());
+
         telemetry.addData("liftHeight", liftHeight);
-        telemetry.addData("Outtake", OuttakePincher.getPosition());
+
 
         telemetry.update();
 
@@ -160,29 +259,50 @@ public class LeftAsync extends LinearOpMode {
                 new ParallelAction(
                         new LiftLoop(),
                         new SequentialAction(
-                                new ParallelAction( // drive to drop S1 and lift slides and put arm up
+                                new ParallelAction( // bucket 1
                                         TrajectoryActionBucket1,
-                                        new org.firstinspires.ftc.teamcode.AutoBucket1()
+                                        new InstantAction(() -> lift.OuttakePincherClose()),
+                                        new InstantAction(() -> lift.Bucket()),
+                                        new InstantAction(() -> liftHeight = HighBucketAuto),
+                                        new InstantAction(() -> lift.IntakePincherOpenAuto())
                                 ),
-                                new ParallelAction(
+                                new ParallelAction( // drop 1
                                         new WaitBucket(),
                                         new SampleDrop()
                                 ),
-                                new ParallelAction(
-                                   TrajectoryActionSample2Pickup,
-                                    new AutoBucketToSample()
-
+                               TrajectoryActionSample2Pickup,
+                                new SamplePickup(),
+                                TrajectoryActionBucket2,
+                                new InstantAction(() -> liftHeight = HighBucketAuto),
+                                new SleepAction(0.4),
+                                new InstantAction(() -> lift.Bucket()),
+                                new SleepAction(1.5),
+                                new ParallelAction( // drop 2
+                                        new WaitBucket(),
+                                        new SampleDrop()
                                 ),
-                                new ParallelAction(
-                                        new WaitSample(),
-                                        new InstantAction(() -> spinny1.setPower(1)),
-                                        new SamplePickup()
+                                TrajectoryActionSample3Pickup,
+                                new SamplePickup(),
+                                TrajectoryActionBucket3,
+                                new InstantAction(() -> liftHeight = HighBucketAuto),
+                                new SleepAction(0.4),
+                                new InstantAction(() -> lift.Bucket()),
+                                new SleepAction(1.5),
+                                new ParallelAction( // drop 3
+                                        new WaitBucket(),
+                                        new SampleDrop()
                                 ),
-                                new ParallelAction(
-                                        TrajectoryActionBucket2
-
+                                TrajectoryActionSample4Pickup,
+                                new SamplePickup(),
+                                TrajectoryActionBucket4,
+                                new InstantAction(() -> liftHeight = HighBucketAuto),
+                                new SleepAction(0.4),
+                                new InstantAction(() -> lift.Bucket()),
+                                new SleepAction(1.5),
+                                new ParallelAction( // drop 4
+                                     new WaitBucket(),
+                                     new BucketIdle()
                                 )
-
 
                         ) // sequential loop for robots sequence
 

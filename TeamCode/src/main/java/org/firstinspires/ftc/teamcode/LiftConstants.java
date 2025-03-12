@@ -5,6 +5,7 @@ public class LiftConstants {
     //Lift heights in ticks
     public static int LowBucket = 800;
     public static int HighBucket = 2200;
+    public static int HighBucketAuto = 2400;
     public static int LowRung = 600;
     public static int HighRung = 950;
     public static int HighRungAuto = 1200;
@@ -32,15 +33,15 @@ public class LiftConstants {
     public static int SpecimanDropAuto4 = 550;
 
     // arm positions
-    public static double ArmIdle = 0.4;
-    public static double ArmTransfer = 0.3;
+    public static double ArmIdle = 0.5;
+    public static double ArmTransfer = 0.31;
     public static double ArmBucket = 0.7;
     public static double ArmWall = 0;
     public static double ArmRung = 0.50;
 
     // elbow positions
     public static double ElbowIdle = 0;
-    public static double ElbowTransfer = 0.1;
+    public static double ElbowTransfer = 0.20;
     public static double ElbowBucket = 0.95;
     public static double ElbowWall = 0;
     public static double ElbowRung = 0.1;
@@ -63,8 +64,10 @@ public class LiftConstants {
     public static double OuttakePincherClose = 0.5;
     public static double OuttakePincherOpen = 0.1;
 
-    public static double InttakePincherClose = 0.5;
-    public static double InttakePincherOpen = 0;
+    public static double InttakePincherClose = 0.7;
+    public static double InttakePincherOpen = 0.5;
+
+    public static double IntakePincherOpenAuto = 0;
 
 
 
