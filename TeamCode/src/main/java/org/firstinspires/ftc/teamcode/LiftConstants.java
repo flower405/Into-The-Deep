@@ -8,7 +8,7 @@ public class LiftConstants {
     public static int HighBucketAuto = 2400;
     public static int LowRung = 600;
     public static int HighRung = 950;
-    public static int HighRungAuto = 1200;
+    public static int HighRungAuto = 1100;
     public static int liftRetracted =0;
 
     public static int liftIdle = 140;
@@ -17,7 +17,7 @@ public class LiftConstants {
     public static int[] liftFlat = {1550, 1500, 1450, 1400};
 
     public static int LiftSpickup = 300;
-    public static int LiftSpickupAuto = 360;
+    public static int LiftSpickupAuto = 380;
 
     public static int BarAuto = 1000;
     public static int BarAuto2 = 1670;
@@ -45,6 +45,8 @@ public class LiftConstants {
     public static double ElbowBucket = 0.95;
     public static double ElbowWall = 0;
     public static double ElbowRung = 0.1;
+
+    public static double ElbowRungAuto = 0.2;
 
     // wrist postion
     public static double WristIdle = 0.67;

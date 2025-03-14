@@ -124,6 +124,15 @@ public class PidControl {
         ClawWrist.setPosition(LiftConstants.WristSpeciman);
     }
 
+    public void SpecimenDropAuto() {
+        LeftArm.setPosition(LiftConstants.ArmRung);
+        RightArm.setPosition(LiftConstants.ArmRung);
+        ClawElbow.setPosition(LiftConstants.ElbowRungAuto);
+        ClawWrist.setPosition(LiftConstants.WristSpeciman);
+    }
+
+
+
     public void Idle() {
         LeftArm.setPosition(LiftConstants.ArmIdle);
         RightArm.setPosition(LiftConstants.ArmIdle);

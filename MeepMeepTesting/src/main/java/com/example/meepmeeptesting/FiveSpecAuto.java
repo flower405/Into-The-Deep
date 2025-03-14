@@ -15,14 +15,24 @@ public class FiveSpecAuto {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(17, -62.8, Math.toRadians(90)))
-                    .splineToLinearHeading(new Pose2d(38, -34, Math.toRadians(45)), Math.toRadians(90))
-                  .splineToLinearHeading(new Pose2d(38, -50, Math.toRadians(300)), Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(45, -34, Math.toRadians(45)), Math.toRadians(90))
-//                    .splineToLinearHeading(new Pose2d(45, -34, Math.toRadians(300)), Math.toRadians(0))
-//                    .splineToLinearHeading(new Pose2d(58, -34, Math.toRadians(45)), Math.toRadians(90))
-//                    .splineToLinearHeading(new Pose2d(58, -34, Math.toRadians(300)), Math.toRadians(0))
-                    .build());
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(15.5, -64, Math.toRadians(90)))
+                .splineToLinearHeading(new Pose2d(37, -38, Math.toRadians(45)), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(39, -44), Math.toRadians(315))
+                .strafeToLinearHeading(new Vector2d(43, -36), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(43, -44), Math.toRadians(315))
+                .strafeToLinearHeading(new Vector2d(55, -36), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(45, -36), Math.toRadians(315))
+                .strafeToLinearHeading(new Vector2d(37, -45), Math.toRadians(90))
+                .strafeToConstantHeading(new Vector2d(37, -58.5))
+
+
+
+
+
+
+             //   .splineToLinearHeading(new Pose2d(58, -34, Math.toRadians(45)), Math.toRadians(90))
+            //    .splineToLinearHeading(new Pose2d(58, -34, Math.toRadians(300)), Math.toRadians(0))
+                .build());
 
 
 
