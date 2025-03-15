@@ -122,6 +122,8 @@ public class ServoTest extends OpMode {
 
 
         telemetry.addData("status", "Initialized");
+        SlideServoRight.setPosition(0);
+        SlideServoLeft.setPosition(0);
 
 
         // limelight set up
@@ -147,24 +149,32 @@ public class ServoTest extends OpMode {
 
 
 if (gamepad2.left_bumper) {
-IntakeFlipLeft.setPosition(0);
-IntakeFlipRight.setPosition(0);
+RightArm.setPosition(0);
+LeftArm.setPosition(0);
 }
 
-if (gamepad2.right_bumper) {
-IntakePincher.setPosition(0);
+if (gamepad2.right_bumper) { // idle / rung
+RightArm.setPosition(0.5);
+LeftArm.setPosition(0.5);
+ClawElbow.setPosition(0);
 }
 
 if (gamepad2.left_trigger > 0.9) {
-
+    RightArm.setPosition(0.7); // bucket
+    LeftArm.setPosition(0.7);
+    ClawElbow.setPosition(0.95);
 }
 
 if (gamepad2.right_trigger > 0.9) {
-
+    RightArm.setPosition(0.31); // transfer
+    LeftArm.setPosition(0.31);
+    ClawElbow.setPosition(0.2);
   }
 
 if (gamepad2.a) {
-
+    RightArm.setPosition(0); // wall
+    LeftArm.setPosition(0);
+    ClawElbow.setPosition(0);
 }
 
 if (gamepad2.b) {

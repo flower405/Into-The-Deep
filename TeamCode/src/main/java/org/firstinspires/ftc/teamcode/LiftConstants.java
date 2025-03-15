@@ -7,7 +7,7 @@ public class LiftConstants {
     public static int HighBucket = 2200;
     public static int HighBucketAuto = 2400;
     public static int LowRung = 600;
-    public static int HighRung = 950;
+    public static int HighRung = 920;
     public static int HighRungAuto = 1100;
     public static int liftRetracted =0;
 
@@ -41,7 +41,7 @@ public class LiftConstants {
 
     // elbow positions
     public static double ElbowIdle = 0;
-    public static double ElbowTransfer = 0.20;
+    public static double ElbowTransfer = 0;
     public static double ElbowBucket = 0.95;
     public static double ElbowWall = 0;
     public static double ElbowRung = 0.1;
@@ -53,7 +53,7 @@ public class LiftConstants {
     public static double WristSpeciman = 0;
 
     // Horizontal slide postions
-    public static double HSIdle = 0;
+    public static double HSIdle = 0.05;
     public static double HSLow = 0.2;
     public static double HSMedium = 0.5;
     public static double HSHigh = 0.75;
@@ -64,7 +64,7 @@ public class LiftConstants {
 
     // Outtake Pincher
     public static double OuttakePincherClose = 0.5;
-    public static double OuttakePincherOpen = 0.1;
+    public static double OuttakePincherOpen = 0.2;
 
     public static double InttakePincherClose = 0.7;
     public static double InttakePincherOpen = 0.5;

@@ -102,8 +102,9 @@ public class Driving extends OpMode {
 
         lift.initTele(hardwareMap);
         lift.OuttakePincherOpen();
-       lift.IntakePincherOpen();
+        lift.IntakePincherOpen();
         liftHeight = LiftConstants.liftRetracted;
+        lift.Idle();
 
 
 
@@ -158,7 +159,7 @@ public class Driving extends OpMode {
         switch (bucketState) {
             case IDLE:  // start positions
                 lift.Idle();
-                OuttakePincher.setPosition(0.1);
+                OuttakePincher.setPosition(0.2);
                lift.IntakePincherOpen();
                 liftHeight = LiftConstants.liftRetracted;
                 bucketState = BucketState.HORIZONTAL_EXTEND;
@@ -228,7 +229,7 @@ public class Driving extends OpMode {
                 }
                 if (BucketTimer.seconds() > 0.7) {
                    lift.HSRetract();
-                   OuttakePincher.setPosition(0.1);
+                   OuttakePincher.setPosition(0.2);
                    liftHeight = LiftConstants.liftRetracted;
                    BucketTimer.reset();
                    bucketState = BucketState.SAMPLE_TRANSFER;
@@ -240,7 +241,7 @@ public class Driving extends OpMode {
                 }
                 if (BucketTimer.seconds() > 0.7) {
                     lift.HSRetract();
-                    OuttakePincher.setPosition(0.1);
+                    OuttakePincher.setPosition(0.2);
                     liftHeight = LiftConstants.liftRetracted;
                     BucketTimer.reset();
                     bucketState = BucketState.SAMPLE_YEET;
@@ -253,7 +254,7 @@ public class Driving extends OpMode {
                 if (BucketTimer.seconds() > 0.6) {
                     lift.ArmTransfer();
                 }
-                if (BucketTimer.seconds() > 0.8) {
+                if (BucketTimer.seconds() > 1) {
                     OuttakePincher.setPosition(0.5);
                     bucketState = BucketState.LIFT_EXTEND;
                 }
@@ -271,7 +272,7 @@ public class Driving extends OpMode {
 
                 }
                 if (gamepad2.left_trigger > 0.9) {
-                    bucketState = BucketState.SAMPLE_YEET;
+                    bucketState = BucketState.WALL_PICKUP;
                     BucketTimer.reset();
                 }
                 if (gamepad1.left_bumper) { // so that you can go back to extending the horizontal slides
@@ -307,7 +308,7 @@ public class Driving extends OpMode {
                 break;
             case SAMPLE_DUMP: // adjusting height
                 if (gamepad2.dpad_down) {
-                    OuttakePincher.setPosition(0.1);
+                    OuttakePincher.setPosition(0.2);
                     BucketTimer.reset();
                     bucketState = BucketState.ARM_RETRACT;
                 }
@@ -372,7 +373,7 @@ public class Driving extends OpMode {
             case ARM_FLIP:
                 if (BucketTimer.seconds() > 0.6) {
                     lift.WallPickup();
-                    OuttakePincher.setPosition(0.1);
+                    OuttakePincher.setPosition(0.2);
                     BucketTimer.reset();
                     bucketState = BucketState.CUBE_PICKUP;
                 }
@@ -382,6 +383,10 @@ public class Driving extends OpMode {
                     OuttakePincher.setPosition(0.5);
                    BucketTimer.reset();
                     bucketState = BucketState.FRONT_BACK_TRANSFER;
+                }
+                if (gamepad2.dpad_up){
+                    BucketTimer.reset();
+                    bucketState = BucketState.EMERGENCY;
                 }
                 break;
             case FRONT_BACK_TRANSFER:

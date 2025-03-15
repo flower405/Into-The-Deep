@@ -184,7 +184,7 @@ public class LeftAsync extends LinearOpMode {
 
 
         TrajectoryActionBuilder Bucket1 = drive.actionBuilder(initialPose) // bucket 1
-                .strafeToLinearHeading(new Vector2d(-54,-53), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(-54,-49), Math.toRadians(45));
 
         Action TrajectoryActionBucket1 = Bucket1.build();
 
@@ -236,6 +236,8 @@ public class LeftAsync extends LinearOpMode {
 
         lift.initTele(hardwareMap);
        lift.HSRetract();
+       lift.IntakeUp();
+       lift.Idle();
 
         imu = hardwareMap.get(IMU.class, "imu");
         RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.UP);
@@ -259,11 +261,12 @@ public class LeftAsync extends LinearOpMode {
                 new ParallelAction(
                         new LiftLoop(),
                         new SequentialAction(
+                                new InstantAction(() -> liftHeight = HighBucketAuto),
+                                new SleepAction(0.5),
                                 new ParallelAction( // bucket 1
                                         TrajectoryActionBucket1,
                                         new InstantAction(() -> lift.OuttakePincherClose()),
                                         new InstantAction(() -> lift.Bucket()),
-                                        new InstantAction(() -> liftHeight = HighBucketAuto),
                                         new InstantAction(() -> lift.IntakePincherOpenAuto())
                                 ),
                                 new ParallelAction( // drop 1
