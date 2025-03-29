@@ -264,7 +264,7 @@ public class Right2 extends LinearOpMode {
         // lift init
         leftLift = hardwareMap.get(DcMotorEx.class, "left_lift");
         lift.initTele(hardwareMap);
-        lift.HSRetract();
+
 
 
         imu = hardwareMap.get(IMU.class, "imu");

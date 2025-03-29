@@ -16,8 +16,7 @@ public class PidControl {
     DcMotorEx leftLift;
     DcMotorEx rightLift;
 
-    private Servo SlideServoLeft = null;
-    private Servo SlideServoRight = null;
+
     private Servo IntakeFlipLeft = null;
     private Servo IntakeFlipRight = null;
     private Servo LeftArm = null;
@@ -62,8 +61,6 @@ public class PidControl {
     public void initTele(HardwareMap hardwareMap) {
         leftLift = hardwareMap.get(DcMotorEx.class, "left_lift");
         rightLift = hardwareMap.get(DcMotorEx.class, "right_lift");
-        SlideServoLeft = hardwareMap.get(Servo.class, "SlideServoLeft");
-        SlideServoRight = hardwareMap.get(Servo.class, "SlideServoRight");
         IntakeFlipLeft = hardwareMap.get(Servo.class, "Intake_Flip_Left");
         IntakeFlipRight = hardwareMap.get(Servo.class, "Intake_Flip_Right");
         RightArm = hardwareMap.get(Servo.class, "Right_Arm");
@@ -83,7 +80,7 @@ public class PidControl {
 
         leftLift.setDirection(DcMotorSimple.Direction.REVERSE);
         rightLift.setDirection(DcMotorSimple.Direction.FORWARD);
-      SlideServoLeft.setDirection(Servo.Direction.REVERSE);
+
       RightArm.setDirection(Servo.Direction.REVERSE);
       IntakeFlipLeft.setDirection(Servo.Direction.REVERSE);
 
@@ -140,20 +137,16 @@ public class PidControl {
         ClawWrist.setPosition(LiftConstants.WristIdle);
     }
 
-    public void HSLow() {
-        SlideServoLeft.setPosition(LiftConstants.HSLow);
-        SlideServoRight.setPosition(LiftConstants.HSLow);
+    public void Idleint() {
+        LeftArm.setPosition(LiftConstants.ArmIdleint);
+        RightArm.setPosition(LiftConstants.ArmIdleint);
+        ClawElbow.setPosition(LiftConstants.ElbowIdle);
+        ClawWrist.setPosition(LiftConstants.WristIdle);
     }
 
-    public void HSMedium() {
-        SlideServoLeft.setPosition(LiftConstants.HSMedium);
-        SlideServoRight.setPosition(LiftConstants.HSMedium);
-    }
 
-    public void HSHigh() {
-        SlideServoLeft.setPosition(LiftConstants.HSHigh);
-        SlideServoRight.setPosition(LiftConstants.HSHigh);
-    }
+
+
 
     public void IntakeUp() {
         IntakeFlipLeft.setPosition(LiftConstants.IntakeUp);
@@ -165,10 +158,7 @@ public class PidControl {
         IntakeFlipRight.setPosition(LiftConstants.IntakeDown);
     }
 
-    public void HSRetract() {
-        SlideServoLeft.setPosition(LiftConstants.HSIdle);
-        SlideServoRight.setPosition(LiftConstants.HSIdle);
-    }
+
 
     public void ElbowTransfer() {
         ClawElbow.setPosition(LiftConstants.ElbowTransfer);

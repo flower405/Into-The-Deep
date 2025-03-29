@@ -119,6 +119,35 @@ public class SamplePush extends LinearOpMode {
         }
     }
 
+
+    public class AutoSlideWall2 implements Action {
+        private double BeginTs = -1;
+
+        public int liftHeight, storeLiftHeight = 0;
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            double t;
+            if (BeginTs < 0) {
+                BeginTs = com.acmerobotics.roadrunner.Actions.now();
+                t = 0;
+            } else {
+                t = com.acmerobotics.roadrunner.Actions.now() - BeginTs;
+            }
+            if (t > 0.5) {
+                lift.WallPickup();
+            }
+            if (t > 0.7) {
+                liftHeight = LiftSpickupAuto2;
+            }
+
+            if (t > 0.7){
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
     public class SpecimenPickup implements Action {
         private double BeginTs = -1;
         @Override
@@ -220,27 +249,27 @@ public class SamplePush extends LinearOpMode {
 
 
         TrajectoryActionBuilder Sample1In = drive.actionBuilder(initialPose)
-                .splineToLinearHeading(new Pose2d(37, -38, Math.toRadians(45)), Math.toRadians(45),
+                .splineToLinearHeading(new Pose2d(38, -39, Math.toRadians(45)), Math.toRadians(45),
                         new TranslationalVelConstraint(90));
 
         Action TrajectoryActionSample1In = Sample1In.build();
 
         TrajectoryActionBuilder Sample1Out = Sample1In.endTrajectory().fresh()
                 .afterTime(0.5, new InstantAction(() -> spinny1.setPower(-1)))
-                .strafeToLinearHeading(new Vector2d(39, -44), Math.toRadians(315),
+                .strafeToLinearHeading(new Vector2d(39, -47), Math.toRadians(315),
                         new TranslationalVelConstraint(90));
 
         Action TrajectoryActionSample1Out = Sample1Out.build();
 
         TrajectoryActionBuilder Sample2In = Sample1Out.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(43, -36), Math.toRadians(45),
+                .strafeToLinearHeading(new Vector2d(43, -37), Math.toRadians(45),
                         new TranslationalVelConstraint(90));
 
         Action TrajectoryActionSample2In = Sample2In.build();
 
         TrajectoryActionBuilder Sample2Out = Sample2In.endTrajectory().fresh()
                 .afterTime(0.7, new InstantAction(() -> spinny1.setPower(-1)))
-                .strafeToLinearHeading(new Vector2d(43, -44), Math.toRadians(315),
+                .strafeToLinearHeading(new Vector2d(43, -48), Math.toRadians(315),
                         new TranslationalVelConstraint(90));
 
         Action TrajectoryActionSample2Out = Sample2Out.build();
@@ -254,69 +283,76 @@ public class SamplePush extends LinearOpMode {
 
         TrajectoryActionBuilder Sample3Out = Sample3In.endTrajectory().fresh()
                 .afterTime(0.9, new InstantAction(() -> spinny1.setPower(-1)))
-                .strafeToLinearHeading(new Vector2d(45, -40), Math.toRadians(305),
+                .strafeToLinearHeading(new Vector2d(46, -47), Math.toRadians(305),
                         new TranslationalVelConstraint(90));
 
         Action TrajectoryActionSample3Out = Sample3Out.build();
 
 
         TrajectoryActionBuilder Specimen1Position = Sample3Out.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(37, -45), Math.toRadians(90),
+                .strafeToLinearHeading(new Vector2d(37, -47), Math.toRadians(90),
                         new TranslationalVelConstraint(90))
-                .strafeToConstantHeading(new Vector2d(37, -58.5),
+                .strafeToConstantHeading(new Vector2d(37, -59),
                         new TranslationalVelConstraint(90));
 
         Action TrajectoryActionSpecimen1Position = Specimen1Position.build();
 
         TrajectoryActionBuilder Specimen = Specimen1Position.endTrajectory().fresh()
                 .afterDisp(53, new InstantAction(() -> liftHeight = SpecimenDrop))
-                .strafeToLinearHeading(new Vector2d(-8, -30), Math.toRadians(90),
+                .strafeToLinearHeading(new Vector2d(-4, -30), Math.toRadians(90),
                         new TranslationalVelConstraint(90))
                 ;
 
         Action TrajectoryActionSpecimen = Specimen.build();
 
-
         TrajectoryActionBuilder Specimen2Pickup = Specimen.endTrajectory().fresh()
-                .afterDisp(49, new InstantAction(() -> lift.OuttakePincherClose()))
-                .strafeToLinearHeading(new Vector2d(37, -59.5), Math.toRadians(90),
-                        new TranslationalVelConstraint(90));
+                .splineToConstantHeading(new Vector2d(0,-36), Math.toRadians(315),
+                        new TranslationalVelConstraint(90))
+                .splineToConstantHeading(new Vector2d(37,-58), Math.toRadians(270),
+                        new TranslationalVelConstraint(90))
+                .splineToConstantHeading(new Vector2d(37,-60), Math.toRadians(270),
+                        new TranslationalVelConstraint(70));
 
         Action TrajectoryActionSpecimen2Pickup = Specimen2Pickup.build();
 
         TrajectoryActionBuilder Specimen2 = Specimen2Pickup.endTrajectory().fresh()
-                .afterDisp(46, new InstantAction(() -> liftHeight = SpecimenDrop))
-                .strafeToLinearHeading(new Vector2d(-6, -30), Math.toRadians(90),
+                .afterDisp(53, new InstantAction(() -> liftHeight = SpecimenDrop))
+                .strafeToLinearHeading(new Vector2d(-4, -31), Math.toRadians(90),
                         new TranslationalVelConstraint(90));
 
 
         Action TrajectoryActionSpecimen2 = Specimen2.build();
 
         TrajectoryActionBuilder Specimen3Pickup = Specimen2.endTrajectory().fresh()
-                .afterDisp(49, new InstantAction(() -> lift.OuttakePincherClose()))
-                .strafeToLinearHeading(new Vector2d(37, -59.5), Math.toRadians(90),
-                        new TranslationalVelConstraint(90));
-
+                .splineToConstantHeading(new Vector2d(0,-36), Math.toRadians(315),
+                        new TranslationalVelConstraint(90))
+                .splineToConstantHeading(new Vector2d(37,-58), Math.toRadians(270),
+                        new TranslationalVelConstraint(90))
+                .splineToConstantHeading(new Vector2d(37,-60), Math.toRadians(270),
+                        new TranslationalVelConstraint(70));
 
         Action TrajectoryActionSpecimen3Pickup = Specimen3Pickup.build();
 
         TrajectoryActionBuilder Specimen3 = Specimen3Pickup.endTrajectory().fresh()
-                .afterDisp(46, new InstantAction(() -> liftHeight = SpecimenDrop))
-                .strafeToLinearHeading(new Vector2d(-4, -30), Math.toRadians(90),
+                .afterDisp(53, new InstantAction(() -> liftHeight = SpecimenDrop))
+                .strafeToLinearHeading(new Vector2d(-2, -31), Math.toRadians(90),
                         new TranslationalVelConstraint(90));
 
         Action TrajectoryActionSpecimen3 = Specimen3.build();
 
         TrajectoryActionBuilder Specimen4Pickup = Specimen3.endTrajectory().fresh()
-                .afterDisp(48, new InstantAction(() -> lift.OuttakePincherClose()))
-                .strafeToLinearHeading(new Vector2d(37, -59.5), Math.toRadians(90),
-                        new TranslationalVelConstraint(90));
+                .splineToConstantHeading(new Vector2d(0,-36), Math.toRadians(315),
+                        new TranslationalVelConstraint(90))
+                .splineToConstantHeading(new Vector2d(37,-58), Math.toRadians(270),
+                        new TranslationalVelConstraint(90))
+                .splineToConstantHeading(new Vector2d(37,-60), Math.toRadians(270),
+                        new TranslationalVelConstraint(70));
 
         Action TrajectoryActionSpecimen4Pickup = Specimen4Pickup.build();
 
         TrajectoryActionBuilder Specimen4 = Specimen4Pickup.endTrajectory().fresh()
-                .afterDisp(46, new InstantAction(() -> liftHeight = SpecimenDrop))
-                .strafeToLinearHeading(new Vector2d(-2, -30), Math.toRadians(90),
+                .afterDisp(53, new InstantAction(() -> liftHeight = SpecimenDrop))
+                .strafeToLinearHeading(new Vector2d(1, -31), Math.toRadians(90),
                         new TranslationalVelConstraint(90));
 
         Action TrajectoryActionSpecimen4 = Specimen4.build();
@@ -331,19 +367,10 @@ public class SamplePush extends LinearOpMode {
 
         TrajectoryActionBuilder Specimen5 = Specimen5Pickup.endTrajectory().fresh()
                 .afterDisp(46, new InstantAction(() -> liftHeight = SpecimenDrop))
-                .strafeToLinearHeading(new Vector2d(0, -30), Math.toRadians(90),
+                .strafeToLinearHeading(new Vector2d(0, -31), Math.toRadians(90),
                         new TranslationalVelConstraint(90));
 
         Action TrajectoryActionSpecimen5 = Specimen5.build();
-
-
-
-
-
-
-
-
-
 
 
         // lift init
@@ -351,10 +378,10 @@ public class SamplePush extends LinearOpMode {
         spinny1 = hardwareMap.get(CRServo.class, "spinny1");
 
         lift.initTele(hardwareMap);
-        lift.HSRetract();
+
         lift.OuttakePincherOpen();
         lift.IntakeUp();
-        lift.Idle();
+        lift.Idleint();
         liftHeight = liftRetracted;
 
 
@@ -374,10 +401,10 @@ public class SamplePush extends LinearOpMode {
                 new ParallelAction(
                         new LiftLoop(),
                         new SequentialAction( // pushing samples
-                            new ParallelAction(
+                                new InstantAction(() -> lift.Idle()),
+                                new ParallelAction(
                                     TrajectoryActionSample1In,
                                     new InstantAction(() -> lift.IntakeDown()),
-                                    new InstantAction(() -> lift.HSLow()),
                                     new InstantAction(() -> spinny1.setPower(1))
                             ),
                                 TrajectoryActionSample1Out,
@@ -388,9 +415,8 @@ public class SamplePush extends LinearOpMode {
                             ),
                             new SleepAction(0.2),
                             new ParallelAction(
-                                TrajectoryActionSample2Out,
-                                new InstantAction(() -> lift.HSRetract())
-                            ),
+                                TrajectoryActionSample2Out
+                                    ),
                             new SleepAction(0.5),
                             new ParallelAction(
                                 TrajectoryActionSample3In,
@@ -399,7 +425,7 @@ public class SamplePush extends LinearOpMode {
                             new SleepAction(0.2),
                             new ParallelAction(
                                 TrajectoryActionSample3Out,
-                                new InstantAction(() -> liftHeight = LiftSpickupAuto),
+                                new InstantAction(() -> liftHeight = LiftSpickup),
                                 new SpecimenPickupReady()
 
                             ),
@@ -410,58 +436,62 @@ public class SamplePush extends LinearOpMode {
                                    new InstantAction(() -> spinny1.setPower(0))
                            ),
                                 new InstantAction(() -> lift.OuttakePincherClose()),
-                                new SleepAction(0.1)
-//                                new InstantAction(() -> liftHeight = HighRung),
-//                                new SleepAction(0.05),
-//                                new ParallelAction(
-//                                        TrajectoryActionSpecimen,
-//                                        new InstantAction(() -> lift.SpecimanDrop())
-//                                        )
-//                                new InstantAction(() -> lift.OuttakePincherOpen()),
-//                                new ParallelAction(
-//                                        TrajectoryActionSpecimen2Pickup,
-//                                        new AutoSlideWall()
-//                                ),
-//                                new InstantAction(() -> liftHeight = HighRung),
-//                                new SleepAction(0.05),
-//                                new ParallelAction(
-//                                        TrajectoryActionSpecimen2,
-//                                        new InstantAction(() -> lift.SpecimenDropAuto())
-//                                ),
-//                                new InstantAction(() -> lift.OuttakePincherOpen()),
-//                                new ParallelAction(
-//                                        TrajectoryActionSpecimen3Pickup,
-//                                        new AutoSlideWall()
-//                                ),
-//                                new InstantAction(() -> liftHeight = HighRung),
-//                                new SleepAction(0.05),
-//                                new ParallelAction(
-//                                        TrajectoryActionSpecimen3,
-//                                        new InstantAction(() -> lift.SpecimenDropAuto())
-//                                ),
-//                                new InstantAction(() -> lift.OuttakePincherOpen()),
-//                                new ParallelAction(
-//                                        TrajectoryActionSpecimen4Pickup,
-//                                        new AutoSlideWall()
-//                                ),
-//                                new InstantAction(() -> liftHeight = HighRung),
-//                                new SleepAction(0.05),
-//                                new ParallelAction(
-//                                        TrajectoryActionSpecimen4,
-//                                        new InstantAction(() -> lift.SpecimenDropAuto())
-//                                ),
-//                                new InstantAction(() -> lift.OuttakePincherOpen()),
-//                                new ParallelAction(
-//                                        TrajectoryActionSpecimen5Pickup,
-//                                        new AutoSlideWall()
-//                                ),
-//                                new InstantAction(() -> liftHeight = HighRung),
-//                                new SleepAction(0.05),
-//                                new ParallelAction(
-//                                        TrajectoryActionSpecimen5,
-//                                        new InstantAction(() -> lift.SpecimenDropAuto())
-//                                )
-
+                                new SleepAction(0.1),
+                                new InstantAction(() -> liftHeight = HighRungAuto),
+                                new SleepAction(0.05),
+                                new ParallelAction(
+                                        TrajectoryActionSpecimen,
+                                        new InstantAction(() -> lift.SpecimanDrop())
+                                        ),
+                               new SleepAction(0.2),
+                                new InstantAction(() -> lift.OuttakePincherOpen()),
+                                new ParallelAction(
+                                        TrajectoryActionSpecimen2Pickup,
+                                        new AutoSlideWall()
+                                ),
+                                new InstantAction(() -> lift.OuttakePincherClose()),
+                                new SleepAction(0.2),
+                                new InstantAction(() -> liftHeight = HighRungAuto2),
+                                new SleepAction(0.05),
+                                new ParallelAction(
+                                        TrajectoryActionSpecimen2,
+                                        new InstantAction(() -> lift.SpecimanDrop())
+                                ),
+                                new SleepAction(0.2),
+                                new InstantAction(() -> lift.OuttakePincherOpen()),
+                               new ParallelAction(
+                                        TrajectoryActionSpecimen3Pickup,
+                                        new AutoSlideWall2()
+                                ),
+                               new InstantAction(() -> lift.OuttakePincherClose()),
+                                new SleepAction(0.2),
+                                new InstantAction(() -> liftHeight = HighRungAuto2),
+                                new SleepAction(0.05),
+                                new ParallelAction(
+                                        TrajectoryActionSpecimen3,
+                                        new InstantAction(() -> lift.SpecimanDrop())
+                                ),
+                                new SleepAction(0.2),
+                                new InstantAction(() -> lift.OuttakePincherOpen()),
+                                new ParallelAction(
+                                        TrajectoryActionSpecimen4Pickup,
+                                        new AutoSlideWall2()
+                                ),
+                                new InstantAction(() -> lift.OuttakePincherClose()),
+                                new SleepAction(0.2),
+                                new InstantAction(() -> liftHeight = HighRungAuto2),
+                                new SleepAction(0.05),
+                                new ParallelAction(
+                                        TrajectoryActionSpecimen4,
+                                        new InstantAction(() -> lift.SpecimenDropAuto())
+                                ),
+                                new SleepAction(0.2),
+                                new InstantAction(() -> lift.OuttakePincherClose()),
+                                new ParallelAction(
+                                        new InstantAction(() -> lift.Idle()),
+                                        new InstantAction(() -> liftHeight = liftRetracted),
+                                        new InstantAction(() -> lift.OuttakePincherOpen())
+                                        )
                         ) // sequential loop for robots sequence
                 ) // parallel loop for lift height and actions
         ); // for actions run blocking

@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -20,6 +21,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 // import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
+@Disabled
 @Autonomous
 public class RedRight1 extends LinearOpMode {
 

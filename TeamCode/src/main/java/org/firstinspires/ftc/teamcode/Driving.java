@@ -33,8 +33,16 @@ public class Driving extends OpMode {
     private int storeLiftHeight = 0;
     private boolean liftIncrease = false;
     private boolean liftDecrease = false;
+
+    private int SlideOffset = 0;
+    private int SlideHeight = 0;
+    private int storeSlideHeight = 0;
+    private boolean SlideIncrease = false;
+    private boolean SlideDecrease = false;
     private DigitalChannel breakBeam = null;
     PidControl lift = new PidControl();
+
+    PidControl2 Slide = new PidControl2();
 
     // Rune was here
     // I love Rune Katchur
@@ -68,6 +76,8 @@ public class Driving extends OpMode {
     }
     BucketState bucketState = BucketState.IDLE;
     ElapsedTime BucketTimer = new ElapsedTime();
+
+    ElapsedTime SpecimenTimer = new ElapsedTime();
     int heightAdjust = 0;
     @Override
     public void init() {
@@ -100,16 +110,20 @@ public class Driving extends OpMode {
 
         telemetry.addData("status", "Initialized");
 
+        Slide.initTele(hardwareMap);
         lift.initTele(hardwareMap);
         lift.OuttakePincherOpen();
         lift.IntakePincherOpen();
         liftHeight = LiftConstants.liftRetracted;
-        lift.Idle();
+        lift.Idleint();
+        lift.IntakeUp();
 
 
 
 
     }
+
+
 
 
     @Override
@@ -142,6 +156,7 @@ public class Driving extends OpMode {
         telemetry.addData("Position",leftLift.getCurrentPosition());
         telemetry.addData("liftHeight",liftHeight);
         lift.setHeight(liftHeight +liftOffset);
+        Slide.setHeight(liftHeight +liftOffset);
         telemetry.addData("lift State",bucketState);
 
         telemetry.addData("breakBeam", breakBeam.getState());
@@ -149,9 +164,18 @@ public class Driving extends OpMode {
 
 
 
-        if (!breakBeam.getState()) {
-            gamepad1.rumble(200);
-            gamepad2.rumble(200);
+//        if (!breakBeam.getState()) {
+//            gamepad1.rumble(200);
+//            gamepad2.rumble(200);
+//        }
+
+
+        if (gamepad1.dpad_up) {
+            SlideHeight = LiftConstants.HRetract;
+        }
+
+        if (gamepad1.dpad_left) {
+            SlideHeight = LiftConstants.HTest;
         }
 
 
@@ -165,18 +189,32 @@ public class Driving extends OpMode {
                 bucketState = BucketState.HORIZONTAL_EXTEND;
                 break;
             case HORIZONTAL_EXTEND: // extending horizontal lifts and flipping intake out
+                if (gamepad2.right_stick_y < -0.6 && !liftIncrease) {
+                    liftHeight += 125;
+                    liftIncrease = true;
+                } else if (gamepad2.right_stick_y > -0.6 ) {
+                    liftIncrease = false;
+                }
+
+                if (gamepad2.right_stick_y > 0.6 && !liftDecrease) {
+                    liftHeight -= 125;
+                    liftDecrease = true;
+                } else if (gamepad2.right_stick_y < 0.6) {
+                    liftDecrease = false;
+                }
+
                 if (gamepad1.left_bumper) {
-                    lift.HSLow();
+
                     bucketState = BucketState.INTAKE;
                     BucketTimer.reset();
                 }
                 if (gamepad1.left_trigger > 0.9) {
-                    lift.HSMedium();
+
                     bucketState = BucketState.INTAKE;
                     BucketTimer.reset();
                 }
                 if (gamepad1.right_trigger > 0.9) {
-                    lift.HSHigh();
+
                     bucketState = BucketState.INTAKE;
                     BucketTimer.reset();
                 }
@@ -214,13 +252,13 @@ public class Driving extends OpMode {
                     bucketState = BucketState.HORIZONTAL_RETRACT;
                 }
                 if (gamepad1.left_bumper) {
-                   lift.HSLow();
+
                 }
                 if (gamepad1.left_trigger > 0.9) {
-                    lift.HSMedium();
+
                 }
                 if (gamepad1.right_trigger > 0.9) {
-                    lift.HSHigh();
+
                 }
                 break;
             case HORIZONTAL_RETRACT: // retract lift and flip back intake
@@ -228,7 +266,7 @@ public class Driving extends OpMode {
                     lift.IntakeUp();
                 }
                 if (BucketTimer.seconds() > 0.7) {
-                   lift.HSRetract();
+
                    OuttakePincher.setPosition(0.2);
                    liftHeight = LiftConstants.liftRetracted;
                    BucketTimer.reset();
@@ -240,7 +278,7 @@ public class Driving extends OpMode {
                     lift.IntakeUp();
                 }
                 if (BucketTimer.seconds() > 0.7) {
-                    lift.HSRetract();
+
                     OuttakePincher.setPosition(0.2);
                     liftHeight = LiftConstants.liftRetracted;
                     BucketTimer.reset();
@@ -276,17 +314,17 @@ public class Driving extends OpMode {
                     BucketTimer.reset();
                 }
                 if (gamepad1.left_bumper) { // so that you can go back to extending the horizontal slides
-                    lift.HSLow();
+
                     BucketTimer.reset();
                     bucketState = BucketState.INTAKE_DOWN;
                 }
                 if (gamepad1.left_trigger > 0.9) {
-                    lift.HSMedium();
+
                     BucketTimer.reset();
                     bucketState = BucketState.INTAKE_DOWN;
                 }
                 if (gamepad1.right_trigger > 0.9) {
-                    lift.HSHigh();
+
                     BucketTimer.reset();
                     bucketState = BucketState.INTAKE_DOWN;
                 }
@@ -365,16 +403,22 @@ public class Driving extends OpMode {
                 }
             case WALL_PICKUP:
                 if (gamepad2.dpad_left) {
-                    liftHeight = LiftConstants.LiftSpickup;
+                    liftHeight = LiftConstants.SampleYeet;
                     bucketState = BucketState.ARM_FLIP;
                     BucketTimer.reset();
+                    SpecimenTimer.reset();
+
                 }
                 break;
             case ARM_FLIP:
                 if (BucketTimer.seconds() > 0.6) {
                     lift.WallPickup();
-                    OuttakePincher.setPosition(0.2);
                     BucketTimer.reset();
+
+                }
+                if (SpecimenTimer.seconds() > 1) {
+                    OuttakePincher.setPosition(0.2);
+                    liftHeight = LiftConstants.LiftSpickup;
                     bucketState = BucketState.CUBE_PICKUP;
                 }
                 break;
@@ -404,6 +448,7 @@ public class Driving extends OpMode {
                     bucketState = BucketState.SPECIMEN_DROP;
                     BucketTimer.reset();
                 }
+
                 break;
             case SPECIMEN_DROP: // dropping the cube off
                 if (BucketTimer.seconds() > 0.1) {
@@ -414,6 +459,7 @@ public class Driving extends OpMode {
                     BucketTimer.reset();
                     bucketState = BucketState.SLIFT_RETRACT;
                 }
+
                 break;
             case SLIFT_RETRACT:
                 if (BucketTimer.seconds() > 0.5) {

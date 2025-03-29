@@ -20,6 +20,7 @@ import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -32,6 +33,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
 // goes straight to pushing samples
+@Disabled
 @Autonomous
 public class Right0 extends LinearOpMode {
     private IMU imu = null;
@@ -320,7 +322,7 @@ public class Right0 extends LinearOpMode {
 
 
         lift.initTele(hardwareMap);
-        lift.HSRetract();
+
         lift.OuttakePincherOpen();
 
         imu = hardwareMap.get(IMU.class, "imu");

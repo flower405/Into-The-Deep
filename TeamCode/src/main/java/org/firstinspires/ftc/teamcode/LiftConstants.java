@@ -6,33 +6,36 @@ public class LiftConstants {
     public static int LowBucket = 800;
     public static int HighBucket = 2200;
     public static int HighBucketAuto = 2400;
-    public static int LowRung = 600;
-    public static int HighRung = 920;
+
+    public static int HighRung = 1100;
     public static int HighRungAuto = 1100;
+
+    public static int SampleYeet = 400;
+
+
+    public static int HighRungAuto2 = 1100;
     public static int liftRetracted =0;
 
-    public static int liftIdle = 140;
-    public static int liftHang = 400;
-
-    public static int[] liftFlat = {1550, 1500, 1450, 1400};
-
     public static int LiftSpickup = 300;
-    public static int LiftSpickupAuto = 380;
+    public static int LiftSpickupAuto = 320;
+
+    public static int LiftSpickupAuto2 = 400;
 
     public static int BarAuto = 1000;
     public static int BarAuto2 = 1670;
 
     public static int SpecimenDrop = 250;
-    public static int SpecimenDropAuto= 450;
+    public static int SpecimenDropAuto= 400;
     public static int SpecimenDropAuto2= 750;
     public static int SpecimenDropAuto3 = 600;
 
-    public static int SpecimanDrop2Auto1= 1570;
-    public static int SpecimanDrop2Auto2= 1470;
-    public static int SpecimanDrop2Auto3 = 200;
-    public static int SpecimanDropAuto4 = 550;
+
+    public static int HRetract = 0;
+
+    public static int HTest = 100;
 
     // arm positions
+    public static double ArmIdleint = 0.4;
     public static double ArmIdle = 0.5;
     public static double ArmTransfer = 0.31;
     public static double ArmBucket = 0.7;

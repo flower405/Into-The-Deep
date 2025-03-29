@@ -1,5 +1,6 @@
 package com.example.meepmeeptesting;
 
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -20,17 +21,32 @@ public class FiveSpecAuto {
                 .strafeToLinearHeading(new Vector2d(39, -44), Math.toRadians(315))
                 .strafeToLinearHeading(new Vector2d(43, -36), Math.toRadians(45))
                 .strafeToLinearHeading(new Vector2d(43, -44), Math.toRadians(315))
-                .strafeToLinearHeading(new Vector2d(55, -36), Math.toRadians(45))
-                .strafeToLinearHeading(new Vector2d(45, -36), Math.toRadians(315))
-                .strafeToLinearHeading(new Vector2d(37, -45), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(55.5, -37.5), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(45, -40), Math.toRadians(305))
+                 .strafeToLinearHeading(new Vector2d(37, -45), Math.toRadians(90))
                 .strafeToConstantHeading(new Vector2d(37, -58.5))
+                .strafeToLinearHeading(new Vector2d(-4, -30), Math.toRadians(90))
+
+
+               //  .strafeToLinearHeading(new Vector2d(37, -59.5), Math.toRadians(90)) //
+                        .splineToConstantHeading(new Vector2d(0,-36), Math.toRadians(330))
+                        .splineToConstantHeading(new Vector2d(37,-55), Math.toRadians(270))
+                        .splineToConstantHeading(new Vector2d(37,-59.5), Math.toRadians(270))
+
+
+
+                .strafeToLinearHeading(new Vector2d(-4, -30), Math.toRadians(90))
+                 .strafeToLinearHeading(new Vector2d(37, -59.5), Math.toRadians(90)) //
+                 .strafeToLinearHeading(new Vector2d(-2, -30), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(37, -60), Math.toRadians(90))//
+                .strafeToLinearHeading(new Vector2d(1, -30), Math.toRadians(90))
 
 
 
 
 
 
-             //   .splineToLinearHeading(new Pose2d(58, -34, Math.toRadians(45)), Math.toRadians(90))
+        //   .splineToLinearHeading(new Pose2d(58, -34, Math.toRadians(45)), Math.toRadians(90))
             //    .splineToLinearHeading(new Pose2d(58, -34, Math.toRadians(300)), Math.toRadians(0))
                 .build());
 

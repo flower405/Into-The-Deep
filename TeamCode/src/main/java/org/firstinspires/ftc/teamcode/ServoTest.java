@@ -43,8 +43,7 @@ public class ServoTest extends OpMode {
 
 
 
-    private Servo SlideServoLeft = null;
-    private Servo SlideServoRight = null;
+
     private Servo IntakeFlipLeft = null;
 
     private Servo IntakeFlipRight = null;
@@ -91,8 +90,7 @@ public class ServoTest extends OpMode {
 
         //  limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
-        SlideServoLeft = hardwareMap.get(Servo.class, "SlideServoLeft");
-        SlideServoRight = hardwareMap.get(Servo.class, "SlideServoRight");
+
         IntakeFlipLeft = hardwareMap.get(Servo.class, "Intake_Flip_Left");
         IntakeFlipRight = hardwareMap.get(Servo.class, "Intake_Flip_Right");
         LeftArm = hardwareMap.get(Servo.class, "Left_Arm");
@@ -108,7 +106,7 @@ public class ServoTest extends OpMode {
 
 
 
-        SlideServoLeft.setDirection(Servo.Direction.REVERSE);
+
         RightArm.setDirection(Servo.Direction.REVERSE);
        IntakeFlipLeft.setDirection(Servo.Direction.REVERSE);
 
@@ -122,8 +120,7 @@ public class ServoTest extends OpMode {
 
 
         telemetry.addData("status", "Initialized");
-        SlideServoRight.setPosition(0);
-        SlideServoLeft.setPosition(0);
+
 
 
         // limelight set up
@@ -151,30 +148,25 @@ public class ServoTest extends OpMode {
 if (gamepad2.left_bumper) {
 RightArm.setPosition(0);
 LeftArm.setPosition(0);
-}
-
-if (gamepad2.right_bumper) { // idle / rung
-RightArm.setPosition(0.5);
-LeftArm.setPosition(0.5);
 ClawElbow.setPosition(0);
 }
 
+if (gamepad2.right_bumper) { // idle / rung
+IntakeFlipLeft.setPosition(0);
+IntakeFlipRight.setPosition(0);
+
+}
+
 if (gamepad2.left_trigger > 0.9) {
-    RightArm.setPosition(0.7); // bucket
-    LeftArm.setPosition(0.7);
-    ClawElbow.setPosition(0.95);
+
 }
 
 if (gamepad2.right_trigger > 0.9) {
-    RightArm.setPosition(0.31); // transfer
-    LeftArm.setPosition(0.31);
-    ClawElbow.setPosition(0.2);
+
   }
 
 if (gamepad2.a) {
-    RightArm.setPosition(0); // wall
-    LeftArm.setPosition(0);
-    ClawElbow.setPosition(0);
+
 }
 
 if (gamepad2.b) {

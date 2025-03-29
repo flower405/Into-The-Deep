@@ -132,11 +132,11 @@ public class LeftAsync extends LinearOpMode {
                 lift.IntakeUp();
                 spinny1.setPower(0);
             }
-            if (t > 0.9) {
-                lift.ArmTransfer();
-            }
-            if ( t > 1.2) {
+            if (t > 0.8) {
                 lift.IntakePincherOpenAuto();
+            }
+            if (t > 1.1) {
+                lift.ArmTransfer();
             }
             if (t > 1.3) {
                 lift.OuttakePincherClose();
@@ -184,7 +184,7 @@ public class LeftAsync extends LinearOpMode {
 
 
         TrajectoryActionBuilder Bucket1 = drive.actionBuilder(initialPose) // bucket 1
-                .strafeToLinearHeading(new Vector2d(-54,-49), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(-50,-52), Math.toRadians(45));
 
         Action TrajectoryActionBucket1 = Bucket1.build();
 
@@ -194,12 +194,12 @@ public class LeftAsync extends LinearOpMode {
         Action TrajectoryActionSample2Pickup = Sample2Pickup.build();
 
         TrajectoryActionBuilder Bucket2 = Sample2Pickup.endTrajectory().fresh() // bucket 2
-                .strafeToLinearHeading(new Vector2d(-54,-50), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(-50,-52), Math.toRadians(45));
 
         Action TrajectoryActionBucket2 = Bucket2.build();
 
         TrajectoryActionBuilder Sample3Pickup = Bucket2.endTrajectory().fresh()  // pickup 3
-                .strafeToLinearHeading(new Vector2d(-54,-36), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-52,-36), Math.toRadians(90));
 
         Action TrajectoryActionSample3Pickup = Sample3Pickup.build();
 
@@ -235,9 +235,9 @@ public class LeftAsync extends LinearOpMode {
 
 
         lift.initTele(hardwareMap);
-       lift.HSRetract();
+
        lift.IntakeUp();
-       lift.Idle();
+       lift.Idleint();
 
         imu = hardwareMap.get(IMU.class, "imu");
         RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.UP);
@@ -273,7 +273,10 @@ public class LeftAsync extends LinearOpMode {
                                         new WaitBucket(),
                                         new SampleDrop()
                                 ),
-                               TrajectoryActionSample2Pickup,
+                               new ParallelAction(
+                                   TrajectoryActionSample2Pickup,
+                                   new AutoBucketToSample()
+                               ),
                                 new SamplePickup(),
                                 TrajectoryActionBucket2,
                                 new InstantAction(() -> liftHeight = HighBucketAuto),
@@ -285,27 +288,28 @@ public class LeftAsync extends LinearOpMode {
                                         new SampleDrop()
                                 ),
                                 TrajectoryActionSample3Pickup,
-                                new SamplePickup(),
-                                TrajectoryActionBucket3,
-                                new InstantAction(() -> liftHeight = HighBucketAuto),
-                                new SleepAction(0.4),
-                                new InstantAction(() -> lift.Bucket()),
-                                new SleepAction(1.5),
-                                new ParallelAction( // drop 3
-                                        new WaitBucket(),
-                                        new SampleDrop()
-                                ),
-                                TrajectoryActionSample4Pickup,
-                                new SamplePickup(),
-                                TrajectoryActionBucket4,
-                                new InstantAction(() -> liftHeight = HighBucketAuto),
-                                new SleepAction(0.4),
-                                new InstantAction(() -> lift.Bucket()),
-                                new SleepAction(1.5),
-                                new ParallelAction( // drop 4
-                                     new WaitBucket(),
-                                     new BucketIdle()
-                                )
+                                new AutoBucketToSample()
+//                                new SamplePickup(),
+//                                TrajectoryActionBucket3,
+//                                new InstantAction(() -> liftHeight = HighBucketAuto),
+//                                new SleepAction(0.4),
+//                                new InstantAction(() -> lift.Bucket()),
+//                                new SleepAction(1.5),
+//                                new ParallelAction( // drop 3
+//                                        new WaitBucket(),
+//                                        new SampleDrop()
+//                                ),
+//                                TrajectoryActionSample4Pickup,
+//                                new SamplePickup(),
+//                                TrajectoryActionBucket4,
+//                                new InstantAction(() -> liftHeight = HighBucketAuto),
+//                                new SleepAction(0.4),
+//                                new InstantAction(() -> lift.Bucket()),
+//                                new SleepAction(1.5),
+//                                new ParallelAction( // drop 4
+//                                     new WaitBucket(),
+//                                     new BucketIdle()
+//                                )
 
                         ) // sequential loop for robots sequence
 
