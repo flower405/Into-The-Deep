@@ -13,14 +13,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 @Disabled
 public class PidControl2 {
-    DcMotorEx HorizontalSlide;
-
-
-
-
+ DcMotorEx HorizontalSlide;
 
     double integralSum = 0;
-    double Kp = 0.007; // 0.045
+    double Kp = 0.004; // 0.045
     double Ki = 0;
     double Kd = 0.000001; // 0.0000038
 
@@ -39,7 +35,7 @@ public class PidControl2 {
 
 
 
-        HorizontalSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        HorizontalSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         HorizontalSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -61,7 +57,7 @@ public class PidControl2 {
 
 
 
-        HorizontalSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        HorizontalSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         HorizontalSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

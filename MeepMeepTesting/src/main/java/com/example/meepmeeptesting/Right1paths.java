@@ -33,25 +33,25 @@ public class Right1paths  {
                 .splineToConstantHeading(new Vector2d(40, -40), Math.toRadians(180)) // place 2 Specimen
                 .splineToConstantHeading(new Vector2d(10, -40), Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(6, -30), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(12, -45), Math.toRadians(0)) // pickup 3 speciman
-                .splineToConstantHeading(new Vector2d(37, -45), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(40, -56.5), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(37, -45), Math.toRadians(180))//place 3 specimen
-                .splineToConstantHeading(new Vector2d(12, -45), Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(6, -30), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(12, -45), Math.toRadians(0)) // pickup 4 speciman
-                .splineToConstantHeading(new Vector2d(37, -45), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(40, -56.5), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(37, -45), Math.toRadians(180))//place 4 specimen
-                .splineToConstantHeading(new Vector2d(12, -45), Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(8, -30), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(12, -45), Math.toRadians(0)) // pickup 5 specimen
-                .splineToConstantHeading(new Vector2d(37, -45), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(40, -56.5), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(37, -45), Math.toRadians(180))//place 5 specimen
-                .splineToConstantHeading(new Vector2d(12, -45), Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(8, -30), Math.toRadians(90))
-                .strafeToConstantHeading(new Vector2d(38, -56))  // park
+//                .splineToConstantHeading(new Vector2d(12, -45), Math.toRadians(0)) // pickup 3 speciman
+//                .splineToConstantHeading(new Vector2d(37, -45), Math.toRadians(0))
+//                .splineToConstantHeading(new Vector2d(40, -56.5), Math.toRadians(270))
+//                .splineToConstantHeading(new Vector2d(37, -45), Math.toRadians(180))//place 3 specimen
+//                .splineToConstantHeading(new Vector2d(12, -45), Math.toRadians(180))
+//                .splineToConstantHeading(new Vector2d(6, -30), Math.toRadians(90))
+//                .splineToConstantHeading(new Vector2d(12, -45), Math.toRadians(0)) // pickup 4 speciman
+//                .splineToConstantHeading(new Vector2d(37, -45), Math.toRadians(0))
+//                .splineToConstantHeading(new Vector2d(40, -56.5), Math.toRadians(270))
+//                .splineToConstantHeading(new Vector2d(37, -45), Math.toRadians(180))//place 4 specimen
+//                .splineToConstantHeading(new Vector2d(12, -45), Math.toRadians(180))
+//                .splineToConstantHeading(new Vector2d(8, -30), Math.toRadians(90))
+//                .splineToConstantHeading(new Vector2d(12, -45), Math.toRadians(0)) // pickup 5 specimen
+//                .splineToConstantHeading(new Vector2d(37, -45), Math.toRadians(0))
+//                .splineToConstantHeading(new Vector2d(40, -56.5), Math.toRadians(270))
+//                .splineToConstantHeading(new Vector2d(37, -45), Math.toRadians(180))//place 5 specimen
+//                .splineToConstantHeading(new Vector2d(12, -45), Math.toRadians(180))
+//                .splineToConstantHeading(new Vector2d(8, -30), Math.toRadians(90))
+//                .strafeToConstantHeading(new Vector2d(38, -56))  // park
 
 
 

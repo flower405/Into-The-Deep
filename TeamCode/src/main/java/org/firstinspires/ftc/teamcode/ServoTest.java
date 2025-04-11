@@ -146,14 +146,11 @@ public class ServoTest extends OpMode {
 
 
 if (gamepad2.left_bumper) {
-RightArm.setPosition(0);
-LeftArm.setPosition(0);
-ClawElbow.setPosition(0);
+OuttakePincher.setPosition(0);
 }
 
 if (gamepad2.right_bumper) { // idle / rung
-IntakeFlipLeft.setPosition(0);
-IntakeFlipRight.setPosition(0);
+OuttakePincher.setPosition(0.5);
 
 }
 

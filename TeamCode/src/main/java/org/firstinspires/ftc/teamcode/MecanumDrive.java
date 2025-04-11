@@ -67,38 +67,41 @@ public class MecanumDrive {
         // drive model parameters
         public double inPerTick = 1; // SparkFun OTOS Note: you can probably leave this at 1
         //   public double lateralInPerTick =   0.6173031207394403;
-        public double lateralInPerTick = 0.6137804565623857;
-        //   public double trackWidthTicks = 11.921822162752171;
+        public double lateralInPerTick =  0.6003462368789224;
+       // public double lateralInPerTick = 0.6137804565623857;
 
-          public double trackWidthTicks = 13.143268993978948;
+
+          public double trackWidthTicks = 13.176253311498105;
+    //    public double trackWidthTicks = 13.143268993978948;
 
 
         // feedforward parameters (in tick units)
 
-        //   public double kS = 1.355400335263599;
-        public double kS = 1.1876485902609755;
-        //    public double kV = 0.13567311418191833;
-        public double kV = 0.13695244562909686;
-       // public double kA = 0.015;
-        public double kA = 0.01;
+     //   public double kS = 1.1876485902609755;
+        public double kS =  1.0737511715742212;
 
+   //     public double kV = 0.13695244562909686;
+        public double kV = 0.14419726412518613;
+
+     //   public double kA = 0.01;
+        public double kA = 0.01;
         // path profile parameters (in 0.0000001inches)
-        public double maxWheelVel = 60;
+        public double maxWheelVel = 50;
         public double minProfileAccel = -30;
-        public double maxProfileAccel = 60;
+        public double maxProfileAccel = 50;
 
         // turn profile parameters (in radians)
         public double maxAngVel = Math.PI; // shared with path
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        //  public double axialGain = 2;
 
-        public double axialGain = 3.5;
-        //  public double lateralGain = 2;
-          public double lateralGain = 3;
-         //  public double headingGain = 3; // shared with turn
-        public double headingGain = 1;
+     //   public double axialGain = 3.5;
+        public double axialGain = 3;
+      //  public double lateralGain = 3;
+          public double lateralGain = 1;
+         //  public double headingGain = 1;
+        public double headingGain = 3;
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;

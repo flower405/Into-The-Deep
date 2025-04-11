@@ -23,6 +23,8 @@ public class Driving extends OpMode {
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
+
+    private DcMotor HorizontalSlide = null;
     private DcMotor leftLift = null;
     private CRServo spinny1 = null;
 
@@ -44,13 +46,14 @@ public class Driving extends OpMode {
 
     PidControl2 Slide = new PidControl2();
 
+
     // Rune was here
     // I love Rune Katchur
 
     private enum BucketState {
         IDLE,
         HORIZONTAL_EXTEND,
-       INTAKE_DOWN,
+        INTAKE_DOWN,
         INTAKE,
         INTAKE_PINCHER_CLOSE,
         SAMPLE_YEET,
@@ -72,13 +75,24 @@ public class Driving extends OpMode {
         SPECIMEN_DROP,
         SLIFT_RETRACT,
         EMERGENCY
-
     }
+
+    private enum HangState {
+        LIFT_START,
+        LIFT_EXTEND,
+        BOX_EXTEND,
+        BOX_RETRACT,
+        LIFT_RETRACT,
+        LIFT_RETRACTED
+    }
+
     BucketState bucketState = BucketState.IDLE;
+    HangState hangState = HangState.LIFT_START;
     ElapsedTime BucketTimer = new ElapsedTime();
 
     ElapsedTime SpecimenTimer = new ElapsedTime();
     int heightAdjust = 0;
+
     @Override
     public void init() {
         leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front");
@@ -86,7 +100,7 @@ public class Driving extends OpMode {
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back");
         leftLift = hardwareMap.get(DcMotorEx.class, "left_lift");
-
+        HorizontalSlide = hardwareMap.get(DcMotorEx.class, "horizontal_slide");
         spinny1 = hardwareMap.get(CRServo.class, "spinny1");
         OuttakePincher = hardwareMap.get(Servo.class, "Outtake_Pincher");
         breakBeam = hardwareMap.get(DigitalChannel.class, "break_beam");
@@ -96,12 +110,12 @@ public class Driving extends OpMode {
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
         spinny1.setDirection(DcMotorSimple.Direction.REVERSE);
+        HorizontalSlide.setDirection(DcMotor.Direction.REVERSE);
 
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -115,17 +129,12 @@ public class Driving extends OpMode {
         lift.OuttakePincherOpen();
         lift.IntakePincherOpen();
         liftHeight = LiftConstants.liftRetracted;
+        SlideHeight = LiftConstants.HRetract;
         lift.Idleint();
         lift.IntakeUp();
 
 
-
-
     }
-
-
-
-
     @Override
     public void loop() {
         double leftFrontPower;
@@ -153,73 +162,80 @@ public class Driving extends OpMode {
         leftBackDrive.setPower(leftBackPower);
         rightBackDrive.setPower(rightBackPower);
 
-        telemetry.addData("Position",leftLift.getCurrentPosition());
-        telemetry.addData("liftHeight",liftHeight);
-        lift.setHeight(liftHeight +liftOffset);
-        Slide.setHeight(liftHeight +liftOffset);
-        telemetry.addData("lift State",bucketState);
+        telemetry.addData("Position", leftLift.getCurrentPosition());
+        telemetry.addData("liftHeight", liftHeight);
+        lift.setHeight(liftHeight + liftOffset);
+        Slide.setHeight(SlideHeight + SlideOffset);
+        telemetry.addData("lift State", bucketState);
+        telemetry.addData("PositionSlide", Slide.HorizontalSlide.getCurrentPosition());
+        telemetry.addData("SlideHeight", SlideHeight);
 
         telemetry.addData("breakBeam", breakBeam.getState());
 
 
-
-
-//        if (!breakBeam.getState()) {
-//            gamepad1.rumble(200);
-//            gamepad2.rumble(200);
-//        }
-
-
-        if (gamepad1.dpad_up) {
-            SlideHeight = LiftConstants.HRetract;
+        if (!breakBeam.getState()) {
+            gamepad1.rumble(200);
+            gamepad2.rumble(200);
         }
 
-        if (gamepad1.dpad_left) {
-            SlideHeight = LiftConstants.HTest;
-        }
+
 
 
 
         switch (bucketState) {
             case IDLE:  // start positions
                 lift.Idle();
-                OuttakePincher.setPosition(0.2);
-               lift.IntakePincherOpen();
+                OuttakePincher.setPosition(0);
+                lift.IntakePincherOpen();
                 liftHeight = LiftConstants.liftRetracted;
                 bucketState = BucketState.HORIZONTAL_EXTEND;
+                SlideHeight = LiftConstants.HRetract;
                 break;
             case HORIZONTAL_EXTEND: // extending horizontal lifts and flipping intake out
-                if (gamepad2.right_stick_y < -0.6 && !liftIncrease) {
-                    liftHeight += 125;
-                    liftIncrease = true;
-                } else if (gamepad2.right_stick_y > -0.6 ) {
-                    liftIncrease = false;
-                }
-
-                if (gamepad2.right_stick_y > 0.6 && !liftDecrease) {
-                    liftHeight -= 125;
-                    liftDecrease = true;
-                } else if (gamepad2.right_stick_y < 0.6) {
-                    liftDecrease = false;
-                }
-
                 if (gamepad1.left_bumper) {
-
+                    SlideHeight = LiftConstants.Hlow;
                     bucketState = BucketState.INTAKE;
                     BucketTimer.reset();
                 }
                 if (gamepad1.left_trigger > 0.9) {
-
+                    SlideHeight = LiftConstants.Hmedium;
                     bucketState = BucketState.INTAKE;
                     BucketTimer.reset();
                 }
                 if (gamepad1.right_trigger > 0.9) {
-
+                    SlideHeight = LiftConstants.Hhigh;
                     bucketState = BucketState.INTAKE;
                     BucketTimer.reset();
                 }
                 if (gamepad2.dpad_left) {
                     bucketState = BucketState.WALL_PICKUP;
+                }
+                if (gamepad2.right_stick_y < -0.6 && !SlideIncrease && SlideHeight < 1200) {
+                    SlideHeight += 100;
+                    SlideIncrease = true;
+                } else if (gamepad2.right_stick_y > -0.6 ) {
+                    SlideIncrease = false;
+                }
+
+                if (gamepad2.right_stick_y > 0.6 && !SlideDecrease && SlideHeight > 0) {
+                    SlideHeight -= 100;
+                    SlideDecrease = true;
+                } else if (gamepad2.right_stick_y < 0.6) {
+                    SlideDecrease = false;
+                }
+
+                if (gamepad2.left_stick_y < -0.6 && !liftIncrease) {
+                    liftHeight += 100;
+                    liftIncrease = true;
+                } else if (gamepad2.right_stick_y > -0.6 ) {
+                    liftIncrease = false;
+                }
+
+                if (gamepad2.left_stick_y > 0.6 && !liftDecrease) {
+                    liftHeight -= 100;
+                    liftDecrease = true;
+                } else if (gamepad2.right_stick_y < 0.6) {
+                    liftDecrease = false;
                 }
                 break;
             case INTAKE_DOWN:
@@ -234,7 +250,7 @@ public class Driving extends OpMode {
                 break;
             case INTAKE_PINCHER_CLOSE:
                 if (gamepad1.a) {
-                   lift.IntakeDown();
+                    lift.IntakeDown();
                 }
                 if (gamepad1.b) {
                     lift.IntakeUp();
@@ -252,25 +268,38 @@ public class Driving extends OpMode {
                     bucketState = BucketState.HORIZONTAL_RETRACT;
                 }
                 if (gamepad1.left_bumper) {
-
+                    SlideHeight = LiftConstants.Hlow;
                 }
                 if (gamepad1.left_trigger > 0.9) {
-
+                    SlideHeight = LiftConstants.Hmedium;
                 }
                 if (gamepad1.right_trigger > 0.9) {
+                    SlideHeight = LiftConstants.Hhigh;
+                }
+                if (gamepad2.right_stick_y < -0.6 && !SlideIncrease && SlideHeight < 1300) {
+                    SlideHeight += 100;
+                    SlideIncrease = true;
+                } else if (gamepad2.right_stick_y > -0.6 ) {
+                    SlideIncrease = false;
+                }
 
+                if (gamepad2.right_stick_y > 0.6 && !SlideDecrease && SlideHeight > 0) {
+                    SlideHeight -= 100;
+                    SlideDecrease = true;
+                } else if (gamepad2.right_stick_y < 0.6) {
+                    SlideDecrease = false;
                 }
                 break;
             case HORIZONTAL_RETRACT: // retract lift and flip back intake
-                if (BucketTimer.seconds() > 0.4) {
+                if (BucketTimer.seconds() > 0.2) {
                     lift.IntakeUp();
                 }
-                if (BucketTimer.seconds() > 0.7) {
-
-                   OuttakePincher.setPosition(0.2);
-                   liftHeight = LiftConstants.liftRetracted;
-                   BucketTimer.reset();
-                   bucketState = BucketState.SAMPLE_TRANSFER;
+                if (BucketTimer.seconds() > 0.5) {
+                    SlideHeight = LiftConstants.HRetract;
+                    OuttakePincher.setPosition(0);
+                    liftHeight = LiftConstants.liftRetracted;
+                    BucketTimer.reset();
+                    bucketState = BucketState.SAMPLE_TRANSFER;
                 }
                 break;
             case HORIZONTAL_RETRACT2:
@@ -278,16 +307,16 @@ public class Driving extends OpMode {
                     lift.IntakeUp();
                 }
                 if (BucketTimer.seconds() > 0.7) {
-
-                    OuttakePincher.setPosition(0.2);
+                    SlideHeight = LiftConstants.HRetract;
+                    OuttakePincher.setPosition(0);
                     liftHeight = LiftConstants.liftRetracted;
                     BucketTimer.reset();
                     bucketState = BucketState.SAMPLE_YEET;
                 }
             case SAMPLE_TRANSFER: // arm goes from idle to pick up cube and go back to idle
-                if (BucketTimer.seconds()> 0.4) {
+                if (BucketTimer.seconds() > 0.4) {
                     lift.ElbowTransfer();
-                   lift.IntakePincherOpen(); // open claw
+                    lift.IntakePincherOpen(); // open claw
                 }
                 if (BucketTimer.seconds() > 0.6) {
                     lift.ArmTransfer();
@@ -314,19 +343,33 @@ public class Driving extends OpMode {
                     BucketTimer.reset();
                 }
                 if (gamepad1.left_bumper) { // so that you can go back to extending the horizontal slides
-
+                    SlideHeight = LiftConstants.Hlow;
                     BucketTimer.reset();
                     bucketState = BucketState.INTAKE_DOWN;
                 }
                 if (gamepad1.left_trigger > 0.9) {
-
+                    SlideHeight = LiftConstants.Hmedium;
                     BucketTimer.reset();
                     bucketState = BucketState.INTAKE_DOWN;
                 }
                 if (gamepad1.right_trigger > 0.9) {
-
+                    SlideHeight = LiftConstants.Hhigh;
                     BucketTimer.reset();
                     bucketState = BucketState.INTAKE_DOWN;
+                }
+
+                if (gamepad2.right_stick_y < -0.6 && !SlideIncrease && SlideHeight < 1200) {
+                    SlideHeight += 100;
+                    SlideIncrease = true;
+                } else if (gamepad2.right_stick_y > -0.6 ) {
+                    SlideIncrease = false;
+                }
+
+                if (gamepad2.right_stick_y > 0.6 && !SlideDecrease && SlideHeight > 0) {
+                    SlideHeight -= 100;
+                    SlideDecrease = true;
+                } else if (gamepad2.right_stick_y < 0.6) {
+                    SlideDecrease = false;
                 }
 
                 if (gamepad2.dpad_up) { //to reset in emergency
@@ -346,7 +389,7 @@ public class Driving extends OpMode {
                 break;
             case SAMPLE_DUMP: // adjusting height
                 if (gamepad2.dpad_down) {
-                    OuttakePincher.setPosition(0.2);
+                    OuttakePincher.setPosition(0);
                     BucketTimer.reset();
                     bucketState = BucketState.ARM_RETRACT;
                 }
@@ -363,7 +406,7 @@ public class Driving extends OpMode {
                 break;
             case ARM_RETRACT:
                 if (BucketTimer.seconds() > 0.5) {
-                   lift.ArmRetract();
+                    lift.ArmRetract();
                 }
                 if (BucketTimer.seconds() > 1.2) {
                     liftHeight = LiftConstants.liftRetracted;
@@ -417,7 +460,7 @@ public class Driving extends OpMode {
 
                 }
                 if (SpecimenTimer.seconds() > 1) {
-                    OuttakePincher.setPosition(0.2);
+                    OuttakePincher.setPosition(0);
                     liftHeight = LiftConstants.LiftSpickup;
                     bucketState = BucketState.CUBE_PICKUP;
                 }
@@ -425,10 +468,10 @@ public class Driving extends OpMode {
             case CUBE_PICKUP: // pickup cube and swing arm around
                 if (gamepad2.a) {
                     OuttakePincher.setPosition(0.5);
-                   BucketTimer.reset();
+                    BucketTimer.reset();
                     bucketState = BucketState.FRONT_BACK_TRANSFER;
                 }
-                if (gamepad2.dpad_up){
+                if (gamepad2.dpad_up) {
                     BucketTimer.reset();
                     bucketState = BucketState.EMERGENCY;
                 }
@@ -463,7 +506,7 @@ public class Driving extends OpMode {
                 break;
             case SLIFT_RETRACT:
                 if (BucketTimer.seconds() > 0.5) {
-                   lift.ArmRetract();
+                    lift.ArmRetract();
                 }
                 if (BucketTimer.seconds() > 1) {
                     liftHeight = LiftConstants.liftRetracted;
@@ -471,7 +514,7 @@ public class Driving extends OpMode {
                 }
                 break;
             case EMERGENCY: //to reset just in case
-               lift.ArmRetract();
+                lift.ArmRetract();
                 if (BucketTimer.seconds() > 1) {
                     liftHeight = LiftConstants.liftRetracted;
                     bucketState = BucketState.IDLE;
@@ -480,14 +523,65 @@ public class Driving extends OpMode {
             default:
                 bucketState = BucketState.IDLE;
         }
-    }
-    @Override
-    public void stop() {
-        leftFrontDrive.setPower(0);
-        rightFrontDrive.setPower(0);
-        leftBackDrive.setPower(0);
-        rightBackDrive.setPower(0);
 
+
+        switch (hangState) {
+            case LIFT_START:
+                //Driver 2 Dpad starts sequence
+                if (gamepad2.touchpad) {
+                    hangState = HangState.LIFT_EXTEND;
+                    //Extend lift
+                    liftHeight = LiftConstants.liftHang2;
+                }
+                break;
+            case LIFT_EXTEND:
+                if (gamepad2.dpad_down) {                    hangState = HangState.LIFT_RETRACT;
+        }
+
+        break;
+        case LIFT_RETRACT:
+        // Wait for dpad_up to retract lift and hang
+        //Goes straight back to start in case it gets stuck and can't retract all the way
+        liftHeight = LiftConstants.liftHang;
+//        if (!gamepad2.dpad_up) {
+//            hangState = HangState.LIFT_START;
+//            //Retract Lift
+//        }
+        if (gamepad2.right_stick_button) {
+            liftHeight = LiftConstants.liftbackup;
+        }
+        if (gamepad2.left_stick_button) {
+            leftLift.setPower(0);
+        }
+            if (gamepad2.left_stick_y < -0.6 && !liftIncrease) {
+                liftHeight += 100;
+                liftIncrease = true;
+            } else if (gamepad2.right_stick_y > -0.6 ) {
+                liftIncrease = false;
+            }
+
+            if (gamepad2.left_stick_y > 0.6 && !liftDecrease) {
+                liftHeight -= 100;
+                liftDecrease = true;
+            } else if (gamepad2.right_stick_y < 0.6) {
+                liftDecrease = false;
+            }
+        break;
+        default:
+        //Should never happen but just in case
+        hangState = hangState.LIFT_START;
     }
 
 }
+        @Override
+        public void stop () {
+            leftFrontDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightBackDrive.setPower(0);
+
+
+        }
+    }
+
+

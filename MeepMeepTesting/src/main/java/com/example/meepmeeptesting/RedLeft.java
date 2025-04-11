@@ -1,5 +1,6 @@
 package com.example.meepmeeptesting;
 
+import com.acmerobotics.roadrunner.LinearHeadingPath;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
@@ -16,11 +17,15 @@ public class RedLeft {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-10, -52, Math.toRadians(90)))
-                .lineToY(-36)
-                // place first speciman on bar
-                .strafeTo(new Vector2d(-48, -39))
-                // pick up sample 1
-
+                .strafeToLinearHeading(new Vector2d(-52,-52), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-45, -36), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-49,-51), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-56,-36), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-49,-51), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-51,-33), Math.toRadians(145))
+                .strafeToLinearHeading(new Vector2d(-49,-51), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-45,-11), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-24,-10), Math.toRadians(0))
 
 
 

@@ -81,8 +81,10 @@ public class PidControl {
         leftLift.setDirection(DcMotorSimple.Direction.REVERSE);
         rightLift.setDirection(DcMotorSimple.Direction.FORWARD);
 
+
       RightArm.setDirection(Servo.Direction.REVERSE);
       IntakeFlipLeft.setDirection(Servo.Direction.REVERSE);
+      ClawElbow.setDirection(Servo.Direction.REVERSE);
 
 
         leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -186,6 +188,13 @@ public class PidControl {
     public void Bucket() {
         LeftArm.setPosition(LiftConstants.ArmBucket);
         RightArm.setPosition(LiftConstants.ArmBucket);
+        ClawElbow.setPosition(LiftConstants.ElbowBucket);
+        ClawWrist.setPosition(LiftConstants.WristIdle);
+    }
+
+    public void BucketAuto() {
+        LeftArm.setPosition(LiftConstants.ArmBucketAuto);
+        RightArm.setPosition(LiftConstants.ArmBucketAuto);
         ClawElbow.setPosition(LiftConstants.ElbowBucket);
         ClawWrist.setPosition(LiftConstants.WristIdle);
     }
