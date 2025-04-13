@@ -55,7 +55,7 @@ public class ServoTest extends OpMode {
     private Servo LeftArm = null;
     private Servo RightArm = null;
 
-
+    private DcMotor HorizontalSlide = null;
 
     private Servo OuttakePincher = null;
 
@@ -94,6 +94,7 @@ public class ServoTest extends OpMode {
         IntakeFlipLeft = hardwareMap.get(Servo.class, "Intake_Flip_Left");
         IntakeFlipRight = hardwareMap.get(Servo.class, "Intake_Flip_Right");
         LeftArm = hardwareMap.get(Servo.class, "Left_Arm");
+        HorizontalSlide = hardwareMap.get(DcMotorEx.class, "horizontal_slide");
         RightArm = hardwareMap.get(Servo.class, "Right_Arm");
         ClawElbow = hardwareMap.get(Servo.class, "Claw_Elbow");
         ClawWrist = hardwareMap.get(Servo.class, "Claw_Wrist");
@@ -108,7 +109,8 @@ public class ServoTest extends OpMode {
 
 
         RightArm.setDirection(Servo.Direction.REVERSE);
-       IntakeFlipLeft.setDirection(Servo.Direction.REVERSE);
+      IntakeFlipLeft.setDirection(Servo.Direction.REVERSE);
+        HorizontalSlide.setDirection(DcMotor.Direction.REVERSE);
 
 
 
@@ -121,7 +123,8 @@ public class ServoTest extends OpMode {
 
         telemetry.addData("status", "Initialized");
 
-
+        HorizontalSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        HorizontalSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         // limelight set up
         //  telemetry.setMsTransmissionInterval(11);
@@ -143,14 +146,16 @@ public class ServoTest extends OpMode {
     @Override
     public void loop() {
 
-
+telemetry.addData("Position", HorizontalSlide.getCurrentPosition());
 
 if (gamepad2.left_bumper) {
-OuttakePincher.setPosition(0);
+    IntakeFlipLeft.setPosition(0);
+    IntakeFlipRight.setPosition(0);
 }
 
 if (gamepad2.right_bumper) { // idle / rung
-OuttakePincher.setPosition(0.5);
+IntakeFlipRight.setPosition(0.55);
+IntakeFlipLeft.setPosition(0.55);
 
 }
 

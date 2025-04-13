@@ -76,7 +76,6 @@ public class LeftAsync extends LinearOpMode {
                 lift.OuttakePincherOpen();
             }
             if (t > 0.4) {
-                liftHeight = liftRetracted;
                 lift.Idle();
             }
             if (t > 0.6) {
@@ -148,13 +147,13 @@ public class LeftAsync extends LinearOpMode {
             if (t > 1) {
                 lift.ArmTransfer();
             }
-            if (t > 1.2) {
+            if (t > 1.6) {
                 lift.OuttakePincherClose();
             }
-            if (t > 1.4) {
+            if (t > 2) {
                 liftHeight = HighBucketAuto;
             }
-            if (t > 1.6){
+            if (t > 2){
                 return false;
             } else {
                 return true;
@@ -177,7 +176,6 @@ public class LeftAsync extends LinearOpMode {
                 lift.OuttakePincherOpen();
             }
             if (t > 0.4) {
-                liftHeight = liftRetracted;
                 lift.Idle();
             }
             if (t > 0.6){
@@ -196,43 +194,47 @@ public class LeftAsync extends LinearOpMode {
 
 
         TrajectoryActionBuilder Bucket1 = drive.actionBuilder(initialPose) // bucket 1
-                .strafeToLinearHeading(new Vector2d(-52,-52), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(-52,-51), Math.toRadians(45));
 
         Action TrajectoryActionBucket1 = Bucket1.build();
 
         TrajectoryActionBuilder Sample2Pickup = Bucket1.endTrajectory().fresh() // pickup 2
+                .afterTime(0.6, new InstantAction(() -> liftHeight = liftRetracted))
                 .strafeToLinearHeading(new Vector2d(-45, -36), Math.toRadians(90));
 
         Action TrajectoryActionSample2Pickup = Sample2Pickup.build();
 
         TrajectoryActionBuilder Bucket2 = Sample2Pickup.endTrajectory().fresh() // bucket 2
-                .strafeToLinearHeading(new Vector2d(-49,-51), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(-48,-52), Math.toRadians(45));
 
         Action TrajectoryActionBucket2 = Bucket2.build();
 
         TrajectoryActionBuilder Sample3Pickup = Bucket2.endTrajectory().fresh()  // pickup 3
+                .afterTime(0.6, new InstantAction(() -> liftHeight = liftRetracted))
                 .strafeToLinearHeading(new Vector2d(-56,-36), Math.toRadians(90));
 
         Action TrajectoryActionSample3Pickup = Sample3Pickup.build();
 
         TrajectoryActionBuilder Bucket3 = Sample3Pickup.endTrajectory().fresh() // bucket 3
-                .strafeToLinearHeading(new Vector2d(-49,-52), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(-48,-54), Math.toRadians(45));
 
         Action TrajectoryActionBucket3 = Bucket3.build();
 
         TrajectoryActionBuilder Sample4Pickup = Bucket3.endTrajectory().fresh() // pickup 4
+                .afterTime(0.60, new InstantAction(() -> liftHeight = liftRetracted))
                 .strafeToLinearHeading(new Vector2d(-51,-33), Math.toRadians(145));
 
         Action TrajectoryActionSample4Pickup = Sample4Pickup.build();
 
         TrajectoryActionBuilder Bucket4 = Sample4Pickup.endTrajectory().fresh()  // drop 4
-                .strafeToLinearHeading(new Vector2d(-49,-52), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(-48,-54), Math.toRadians(45));
 
         Action TrajectoryActionBucket4 = Bucket4.build();
 
         TrajectoryActionBuilder Park = Bucket4.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-45,-7), Math.toRadians(0))
-                .strafeToLinearHeading(new Vector2d(-21,-7), Math.toRadians(0));
+                .afterTime(0.60, new InstantAction(() -> liftHeight = liftRetracted))
+                .strafeToLinearHeading(new Vector2d(-45,-8), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-21,-8), Math.toRadians(0));
 
         Action TrajectoryActionPark = Park.build();
 

@@ -32,19 +32,23 @@ public class Driving extends OpMode {
     private Servo OuttakePincher = null;
     private int liftOffset = 0;
     private int liftHeight = 0;
+
+    private int SlideHeight = 0;
+    private boolean SlideIncrease = false;
+    private boolean SlideDecrease = false;
     private int storeLiftHeight = 0;
     private boolean liftIncrease = false;
     private boolean liftDecrease = false;
 
-    private int SlideOffset = 0;
-    private int SlideHeight = 0;
-    private int storeSlideHeight = 0;
-    private boolean SlideIncrease = false;
-    private boolean SlideDecrease = false;
+  //  private int SlideOffset = 0;
+ //   private int SlideHeight = 0;
+  //  private int storeSlideHeight = 0;
+  //  private boolean SlideIncrease = false;
+ //   private boolean SlideDecrease = false;
     private DigitalChannel breakBeam = null;
     PidControl lift = new PidControl();
 
-    PidControl2 Slide = new PidControl2();
+   // PidControl2 Slide = new PidControl2();
 
 
     // Rune was here
@@ -86,6 +90,8 @@ public class Driving extends OpMode {
         LIFT_RETRACTED
     }
 
+
+
     BucketState bucketState = BucketState.IDLE;
     HangState hangState = HangState.LIFT_START;
     ElapsedTime BucketTimer = new ElapsedTime();
@@ -105,6 +111,9 @@ public class Driving extends OpMode {
         OuttakePincher = hardwareMap.get(Servo.class, "Outtake_Pincher");
         breakBeam = hardwareMap.get(DigitalChannel.class, "break_beam");
 
+
+
+
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -121,15 +130,17 @@ public class Driving extends OpMode {
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        telemetry.addData("PositionSlide", HorizontalSlide.getCurrentPosition());
+        telemetry.addData("SlideHeight", SlideHeight);
         telemetry.addData("status", "Initialized");
 
-        Slide.initTele(hardwareMap);
+      //  Slide.initTele(hardwareMap);
         lift.initTele(hardwareMap);
         lift.OuttakePincherOpen();
         lift.IntakePincherOpen();
         liftHeight = LiftConstants.liftRetracted;
-        SlideHeight = LiftConstants.HRetract;
+        HorizontalSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      //  SlideHeight = LiftConstants.HRetract;
         lift.Idleint();
         lift.IntakeUp();
 
@@ -165,9 +176,12 @@ public class Driving extends OpMode {
         telemetry.addData("Position", leftLift.getCurrentPosition());
         telemetry.addData("liftHeight", liftHeight);
         lift.setHeight(liftHeight + liftOffset);
-        Slide.setHeight(SlideHeight + SlideOffset);
+    //    Slide.setHeight(SlideHeight + SlideOffset);
         telemetry.addData("lift State", bucketState);
-        telemetry.addData("PositionSlide", Slide.HorizontalSlide.getCurrentPosition());
+        HorizontalSlide.setTargetPosition(SlideHeight);
+        HorizontalSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        HorizontalSlide.setPower(1);
+        telemetry.addData("PositionSlide", HorizontalSlide.getCurrentPosition());
         telemetry.addData("SlideHeight", SlideHeight);
 
         telemetry.addData("breakBeam", breakBeam.getState());
@@ -189,7 +203,9 @@ public class Driving extends OpMode {
                 lift.IntakePincherOpen();
                 liftHeight = LiftConstants.liftRetracted;
                 bucketState = BucketState.HORIZONTAL_EXTEND;
-                SlideHeight = LiftConstants.HRetract;
+                HorizontalSlide.setTargetPosition(0);
+               SlideHeight = LiftConstants.HRetract;
+
                 break;
             case HORIZONTAL_EXTEND: // extending horizontal lifts and flipping intake out
                 if (gamepad1.left_bumper) {

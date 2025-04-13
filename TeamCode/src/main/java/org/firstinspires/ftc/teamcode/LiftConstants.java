@@ -6,9 +6,9 @@ public class LiftConstants {
     public static int LowBucket = 800;
     public static int HighBucket = 2270;
     public static int HighBucketAuto = 2500;
-    public static int HighRung = 800;
+    public static int HighRung = 1000;
 
-    public static int HighRung2 = 700;
+    public static int HighRung2 = 800;
     public static int HighRungAuto = 1100;
     public static int liftHang2 = 1500;
     public static int liftHang = 300;
@@ -18,13 +18,13 @@ public class LiftConstants {
     public static int HighRungAuto2 = 800;
 
     public static int liftRetracted =0;
-    public static int LiftSpickup = 360;
+    public static int LiftSpickup = 230;
     public static int LiftSpickupAuto = 380;
     public static int LiftSpickupAuto2 = 400;
     public static int BarAuto = 1000;
     public static int BarAuto2 = 1670;
     public static int SpecimenDrop = 260;
-    public static int SpecimenDropAuto= 260;
+    public static int SpecimenDropAuto= 250;
 
     public static int Random = 350;
     public static int SpecimenDropAuto2= 750;
@@ -36,7 +36,7 @@ public class LiftConstants {
     public static int Hhigh = 1300;
 
     // arm positions
-    public static double ArmIdleint = 0.5;
+    public static double ArmIdleint = 0.45;
     public static double ArmIdle = 0.5;
     public static double ArmTransfer = 0.35;
     public static double ArmBucket = 0.76;
@@ -47,10 +47,12 @@ public class LiftConstants {
 
     // elbow positions
     public static double ElbowIdle = 0;
+    public static double ElbowTransferAuto = 0.1;
+
     public static double ElbowTransfer = 0;
     public static double ElbowBucket = 0.95;
     public static double ElbowWall = 0.1;
-    public static double ElbowRung = 0.1;
+    public static double ElbowRung = 0;
 
     public static double ElbowRungAuto = 0.2;
 

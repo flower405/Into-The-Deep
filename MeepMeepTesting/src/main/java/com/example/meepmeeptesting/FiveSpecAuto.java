@@ -17,29 +17,41 @@ public class FiveSpecAuto {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(15.5, -64, Math.toRadians(90)))
-                .strafeToConstantHeading(new Vector2d(0, -34))
+                .strafeToConstantHeading(new Vector2d(-5, -31))
                 .splineToSplineHeading(new Pose2d(10, -45, Math.toRadians(80)), Math.toRadians(0)) // sample 1 in
-                .splineToLinearHeading(new Pose2d(38, -39, Math.toRadians(45)), Math.toRadians(45)) // sample 1 in
-//                .strafeToLinearHeading(new Vector2d(39, -47), Math.toRadians(315)) // sample 1 out
-//                .strafeToLinearHeading(new Vector2d(43, -37), Math.toRadians(45)) // sample 2 in
-//                .strafeToLinearHeading(new Vector2d(43, -48), Math.toRadians(315)) // sample 2 out
-//                .strafeToLinearHeading(new Vector2d(55.5, -37.5), Math.toRadians(45)) // sample 3 in
-//                .strafeToLinearHeading(new Vector2d(46, -47), Math.toRadians(305)) // sample 3 out
-//                .strafeToLinearHeading(new Vector2d(37, -47), Math.toRadians(90)) // specimen 1 position
-//                .strafeToConstantHeading(new Vector2d(37, -59))
-//                .strafeToLinearHeading(new Vector2d(-4, -30), Math.toRadians(90)) // specimen 1
-//                .splineToConstantHeading(new Vector2d(0,-36), Math.toRadians(315)) // specimen 2 pickup
-//                .splineToConstantHeading(new Vector2d(37,-58), Math.toRadians(270))
-//                .splineToConstantHeading(new Vector2d(37,-60), Math.toRadians(270))
-//                .strafeToLinearHeading(new Vector2d(-4, -31), Math.toRadians(90)) // specimen 2
-//                .splineToConstantHeading(new Vector2d(0,-36), Math.toRadians(315)) // specimen 3 pickup
-//                .splineToConstantHeading(new Vector2d(37,-58), Math.toRadians(270))
-//                .splineToConstantHeading(new Vector2d(37,-60), Math.toRadians(270))
-//                .strafeToLinearHeading(new Vector2d(-2, -31), Math.toRadians(90)) // specimen 3
-//                .splineToConstantHeading(new Vector2d(0,-36), Math.toRadians(315)) // specimen 4 pickup
-//                .splineToConstantHeading(new Vector2d(37,-58), Math.toRadians(270))
-//                .splineToConstantHeading(new Vector2d(37,-60), Math.toRadians(270))
-//                .strafeToLinearHeading(new Vector2d(1, -31), Math.toRadians(90)) // specimen 4
+                .splineToLinearHeading(new Pose2d(37, -39, Math.toRadians(45)), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(39, -47), Math.toRadians(315))
+                 .strafeToLinearHeading(new Vector2d(47, -37), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(43, -48), Math.toRadians(315))
+                .strafeToLinearHeading(new Vector2d(37, -47), Math.toRadians(90))
+                .strafeToConstantHeading(new Vector2d(37, -59))
+                .splineToConstantHeading(new Vector2d(30, -50), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(4, -50), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(0, -40), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(0, -29), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(0,-36), Math.toRadians(315))
+                .splineToConstantHeading(new Vector2d(37,-58), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(37,-60), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(30, -50), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(4, -50), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(0, -40), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(-3, -29), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(0,-36), Math.toRadians(315))
+                .splineToConstantHeading(new Vector2d(37,-58), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(37,-60), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(30, -50), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(4, -50), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(0, -40), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(-1, -29), Math.toRadians(90))
+                .strafeToConstantHeading(new Vector2d(40, -58))
+
+
+
+
+
+
+
+
                 .build());
 
 
